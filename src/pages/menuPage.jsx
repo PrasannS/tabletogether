@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const WeeklyMenuPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [likedMeals, setLikedMeals] = useState({});
   const [dislikedMeals, setDislikedMeals] = useState({});
+  const navigate = useNavigate();
+
   
   // Update current date every minute
   useEffect(() => {
@@ -129,10 +133,12 @@ const WeeklyMenuPage = () => {
           {formatDate(currentDate)}
         </div>
         <div className="flex space-x-4">
-          <button className="px-4 py-2 bg-blue-700 rounded hover:bg-blue-800">
+          <button className="px-4 py-2 bg-blue-700 rounded hover:bg-blue-800"
+            onClick={() => navigate('/pantry')}>
             Pantry
           </button>
-          <button className="px-4 py-2 bg-blue-700 rounded hover:bg-blue-800">
+          <button className="px-4 py-2 bg-blue-700 rounded hover:bg-blue-800" 
+            onClick={() => navigate('/recipes')}>
             Recipe Database
           </button>
         </div>

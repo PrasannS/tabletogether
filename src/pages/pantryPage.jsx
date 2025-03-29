@@ -1,5 +1,6 @@
 // Starter code will be the same as recipe database so don't do that one yet
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const RecipeSearch = () => {
   const [query, setQuery] = useState('');
