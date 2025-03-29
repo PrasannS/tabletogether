@@ -13,19 +13,19 @@ import {
 // Main App Component
 const NotesApp = () => {
   // Firebase configuration - replace with your own config
-  const firebaseConfig = {
-    apiKey: "AIzaSyAPFn9zzoCufbohVJ5VDcUC6gBtPC7IB_o",
-    authDomain: "tabletogether.firebaseapp.com",
-    projectId: "tabletogether",
-    storageBucket: "tabletogether.firebasestorage.app",
-    messagingSenderId: "536905524696",
-    appId: "1:536905524696:web:e93dcac6f4106ca8a73ead"
-  };
+  // const firebaseConfig = {
+  //   apiKey: "AIzaSyAPFn9zzoCufbohVJ5VDcUC6gBtPC7IB_o",
+  //   authDomain: "tabletogether.firebaseapp.com",
+  //   projectId: "tabletogether",
+  //   storageBucket: "tabletogether.firebasestorage.app",
+  //   messagingSenderId: "536905524696",
+  //   appId: "1:536905524696:web:e93dcac6f4106ca8a73ead"
+  // };
   
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  // // Initialize Firebase
+  // const app = initializeApp(firebaseConfig);
+  // const db = getFirestore(app);
 
   // State variables
   const [notes, setNotes] = useState([]);

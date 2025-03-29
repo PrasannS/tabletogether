@@ -1,7 +1,33 @@
 import React, { useState, useEffect } from 'react';
+import { collection, query, onSnapshot, where } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+import { 
+  getFirestore, 
+  addDoc, 
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc
+} from 'firebase/firestore';
 
 const RecipeSearch = () => {
-  const [query, setQuery] = useState('');
+
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAPFn9zzoCufbohVJ5VDcUC6gBtPC7IB_o",
+    authDomain: "tabletogether.firebaseapp.com",
+    projectId: "tabletogether",
+    storageBucket: "tabletogether.firebasestorage.app",
+    messagingSenderId: "536905524696",
+    appId: "1:536905524696:web:e93dcac6f4106ca8a73ead"
+  };
+  
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
     vegetarian: false,
     vegan: false,
@@ -9,113 +35,76 @@ const RecipeSearch = () => {
     dairyFree: false,
   });
   const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Mock data to simulate API response
-  const mockRecipes = [
-    {
-      id: 1,
-      title: 'Vegetable Stir Fry',
-      calories: 320,
-      vegetarian: true,
-      vegan: true,
-      glutenFree: true,
-      dairyFree: true,
-      image: '/api/placeholder/200/150'
-    },
-    {
-      id: 2,
-      title: 'Chicken Alfredo Pasta',
-      calories: 650,
-      vegetarian: false,
-      vegan: false,
-      glutenFree: false,
-      dairyFree: false,
-      image: '/api/placeholder/200/150'
-    },
-    {
-      id: 3,
-      title: 'Greek Salad',
-      calories: 280,
-      vegetarian: true,
-      vegan: false,
-      glutenFree: true,
-      dairyFree: false,
-      image: '/api/placeholder/200/150'
-    },
-    {
-      id: 4,
-      title: 'Vegan Buddha Bowl',
-      calories: 420,
-      vegetarian: true,
-      vegan: true,
-      glutenFree: true,
-      dairyFree: true,
-      image: '/api/placeholder/200/150'
-    },
-    {
-      id: 5,
-      title: 'Beef Burger',
-      calories: 580,
-      vegetarian: false,
-      vegan: false,
-      glutenFree: false,
-      dairyFree: false,
-      image: '/api/placeholder/200/150'
-    },
-    {
-      id: 6,
-      title: 'Gluten-Free Pancakes',
-      calories: 340,
-      vegetarian: true,
-      vegan: false,
-      glutenFree: true,
-      dairyFree: false,
-      image: '/api/placeholder/200/150'
-    }
-  ];
-
-  // Search and filter recipes
+  // Fetch recipes from Firestore with live updates
   useEffect(() => {
-    const searchRecipes = () => {
-      setLoading(true);
-      setError(null);
+
+    console.log();
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Create a base query to the recipes collection
+      const recipesRef = collection(db, 'recipes');
       
-      try {
-        // Simulate API request delay
-        setTimeout(() => {
-          let filteredRecipes = [...mockRecipes];
+      // Apply filters to the query if any are active
+      let firestoreQuery = query(recipesRef);
+      
+      // Construct array of conditions for Firestore query
+      const activeFilters = Object.entries(filters)
+        .filter(([_, isActive]) => isActive)
+        .map(([filterName]) => filterName);
+
+      // Apply live subscription to query results with onSnapshot
+      const unsubscribe = onSnapshot(
+        firestoreQuery,
+        (querySnapshot) => {
+          let fetchedRecipes = [];
           
-          // Filter by search query
-          if (query) {
-            filteredRecipes = filteredRecipes.filter(recipe => 
-              recipe.title.toLowerCase().includes(query.toLowerCase())
+          querySnapshot.forEach((doc) => {
+            fetchedRecipes.push({
+              id: doc.id,
+              ...doc.data()
+            });
+          });
+          
+          // Apply text search filter client-side (Firestore doesn't support full-text search)
+          if (searchQuery) {
+            fetchedRecipes = fetchedRecipes.filter(recipe => 
+              recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
             );
           }
           
-          // Apply dietary filters
-          Object.keys(filters).forEach(filter => {
-            if (filters[filter]) {
-              filteredRecipes = filteredRecipes.filter(recipe => recipe[filter]);
-            }
+          // Apply dietary filters client-side if we couldn't do it in the query
+          activeFilters.forEach(filter => {
+            fetchedRecipes = fetchedRecipes.filter(recipe => recipe[filter] === true);
           });
           
-          setRecipes(filteredRecipes);
+          setRecipes(fetchedRecipes);
           setLoading(false);
-        }, 500);
-      } catch (err) {
-        setError('Failed to fetch recipes. Please try again.');
-        setLoading(false);
-      }
-    };
-    
-    searchRecipes();
-  }, [query, filters]);
+        },
+        (err) => {
+          console.error("Error fetching recipes:", err);
+          setError('Failed to fetch recipes. Please try again.');
+          setLoading(false);
+        }
+      );
+      
+      // Cleanup the listener when component unmounts
+      return () => unsubscribe();
+      
+    } catch (err) {
+      console.error("Error setting up Firestore listener:", err);
+      setError('Failed to connect to the database. Please try again.');
+      setLoading(false);
+    }
+  }, [searchQuery, filters]);
 
   // Handle search input change
   const handleQueryChange = (e) => {
-    setQuery(e.target.value);
+    setSearchQuery(e.target.value);
   };
 
   // Handle filter toggle
@@ -135,7 +124,7 @@ const RecipeSearch = () => {
         <input
           type="text"
           placeholder="Search recipes..."
-          value={query}
+          value={searchQuery}
           onChange={handleQueryChange}
           className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
@@ -177,7 +166,7 @@ const RecipeSearch = () => {
           <div key={recipe.id} className="flex border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
             <div className="w-1/3 max-w-xs bg-gray-200">
               <img 
-                src={recipe.image} 
+                src={recipe.image || '/api/placeholder/200/150'} 
                 alt={recipe.title} 
                 className="w-full h-full object-cover"
               />
