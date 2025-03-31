@@ -7,7 +7,7 @@ import WeeklyMenu from './pages/menuPage';
 import PantryPage from './pages/pantryPage';
 import RecipeDatabase from './pages/recipeDatabase';
 import RecipeViewerPage from './pages/recipeViewerPage';
-import NotesApp from './pages/firebasePage';
+import recipeEntryPage from './pages/recipeEntryPage';
 import NavBar from './pages/navBar';
 
 // Create auth context to share authentication state
@@ -74,6 +74,14 @@ function App() {
             } 
           />
           <Route 
+            path="/addrecipe" 
+            element={
+              isAuthenticated ? 
+              <recipeEntryPage /> : 
+              <Navigate to="/login" />
+            } 
+          />
+          <Route 
             path="/pantry" 
             element={
               isAuthenticated ? 
@@ -90,14 +98,6 @@ function App() {
             } 
           />
           <Route 
-            path="/firebase" 
-            element={
-              isAuthenticated ? 
-              <NotesApp /> : 
-              <Navigate to="/login" />
-            } 
-          />
-          <Route 
             path="/viewer" 
             element={
               isAuthenticated ? 
@@ -105,6 +105,8 @@ function App() {
               <Navigate to="/login" />
             } 
           />
+          
+          
 
           {/* Redirect any unknown routes to login */}
           <Route path="*" element={<Navigate to={isAuthenticated ? "/" : "/login"} />} />

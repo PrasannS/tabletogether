@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { recipeParser } from '../../recipeParser';
+import { useNavigate } from 'react-router-dom';
+
 
 const recipeEntryPage = () => {
+	console.log("Recipe Entry Page Loaded");	
 	const [recipeText, setRecipeText] = useState('');
 	const [parsedRecipe, setParsedRecipe] = useState(null);
 	const [isEditing, setIsEditing] = useState(true);
