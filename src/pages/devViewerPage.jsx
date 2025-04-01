@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { 
   ThumbsUp, 
   ThumbsDown, 
@@ -11,52 +11,56 @@ import {
   Calendar 
 } from 'lucide-react';
 
-// import RecipePriceCalculator from '../../RecipePriceCalculator';
-
 // Custom Card Component
 import { Card, CardHeader, CardTitle, CardContent, Button} from '../components/CardComponents';
 
-import { collection, query, onSnapshot, where } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
-import { 
-  getFirestore, 
-  addDoc, 
-  getDocs,
-  doc,
-  updateDoc,
-  deleteDoc
-} from 'firebase/firestore';
-
-
-const RecipeViewerPage = () => {
-  // get recipe from the recipeEntryPage
-  const location = useLocation();
-  const recipe = location.state?.recipe;
-
-  if (!recipe) {
-    console.error("No recipe data was passed to the viewer");
-    return <div className="p-6">No recipe data found. Please go back and try again.</div>;
-  }
-
+const recipeViewerPage = () => {
   const [currentRecipe, setCurrentRecipe] = useState({
-    name: recipe.title,
+    title: "",
     servings: "",
-    ingredients: recipe.ingredients,
-    instructions: recipe.instructions,
-    additionalSections: recipe.additionalSections,
-    image: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS_efsfYCzQtTNE7syTtekzAZuKIItXB7Vh0S8ZsAa_LQIQlSx7lT3sxKhXvB6iXctYZr_OhChfTNyL20fVHTIwtIpPD3EDhO4yOxohcMNh",
+    ingredients: [],
+    instructions: [],
+    name: "Chicken Parmesan",
+    image: "/api/placeholder/400/300",
     chefs: ["Marco Rossi", "Elena Garcia"],
     calories: 650,
-    allergens: ["Dairy", "Wheat", "Eggs"],
+    additionalSections: {}
   });
 
-  // const [currentRecipe, setCurrentRecipe] = useState({
-  //   name: "Chicken Parmesan",
-  //   image: "/api/placeholder/400/300",
-  //   chefs: ["Marco Rossi", "Elena Garcia"],
-  //   calories: 650,
-  //   allergens: ["Dairy", "Wheat", "Eggs"],
-  // });
+  const [likes, setLikes] = useState(0);
+  const [dislikes, setDislikes] = useState(0);
+
+  const recipes = [
+    {
+      name: "Chicken Parmesan",
+      image: "/api/placeholder/400/300",
+      chefs: ["Marco Rossi", "Elena Garcia"],
+      calories: 650,
+      allergens: ["Dairy", "Wheat", "Eggs"],
+    },
+    {
+      name: "Vegetable Lasagna",
+      image: "/api/placeholder/400/300",
+      chefs: ["Sofia Chen", "Antonio Rodriguez"],
+      calories: 450,
+      allergens: ["Dairy", "Wheat"],
+    },
+    {
+      name: "Salmon Teriyaki",
+      image: "/api/placeholder/400/300",
+      chefs: ["Hiroshi Tanaka", "Maria Santos"],
+      calories: 400,
+      allergens: ["Fish", "Soy"],
+    }
+  ];
+
+  const changeRecipe = () => {
+    const currentIndex = recipes.findIndex(r => r.name === currentRecipe.name);
+    const nextIndex = (currentIndex + 1) % recipes.length;
+    setCurrentRecipe(recipes[nextIndex]);
+    setLikes(0);
+    setDislikes(0);
+  };
 
   const firebaseConfig = {
     apiKey: "AIzaSyAPFn9zzoCufbohVJ5VDcUC6gBtPC7IB_o",
@@ -72,61 +76,24 @@ const RecipeViewerPage = () => {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  const [likes, setLikes] = useState(0);
-  const [dislikes, setDislikes] = useState(0);
-
   // upload recipe to firebase
-  const uploadRecipe = async () => {
-    try {
-      // Reference to the recipes collection
-      const recipesRef = collection(db, 'recipes');
-      
-      // Query to check if a recipe with the same name exists
-      const q = query(recipesRef, where("name", "==", currentRecipe.name));
-      const querySnapshot = await getDocs(q);
-      
-      if (!querySnapshot.empty) {
-        // Recipe with same name exists, update it
-        const recipeDoc = querySnapshot.docs[0];
-        const recipeId = recipeDoc.id;
-        
-        await updateDoc(doc(db, 'recipes', recipeId), {
-          name: currentRecipe.name,
-          servings: currentRecipe.servings,
-          ingredients: currentRecipe.ingredients,
-          instructions: currentRecipe.instructions,
-          additionalSections: currentRecipe.additionalSections,
-          image: currentRecipe.image,
-          chefs: currentRecipe.chefs,
-          calories: currentRecipe.calories,
-          allergens: currentRecipe.allergens,
-          updatedAt: new Date()
-        });
-        
-        console.log("Recipe updated successfully");
-      } else {
-        // No recipe with same name, create new one
-        await addDoc(recipesRef, {
-          name: currentRecipe.name,
-          servings: currentRecipe.servings,
-          ingredients: currentRecipe.ingredients,
-          instructions: currentRecipe.instructions,
-          additionalSections: currentRecipe.additionalSections,
-          image: currentRecipe.image,
-          chefs: currentRecipe.chefs,
-          calories: currentRecipe.calories,
-          allergens: currentRecipe.allergens,
-          likes: 0,
-          dislikes: 0,
-          createdAt: new Date()
-        });
-        
-        console.log("Recipe created successfully");
-      }
-    } catch (error) {
-      console.error("Error uploading recipe:", error);
+  const uploadRecipe = () => {
+    // Logic to upload the recipe
+    console.log("Uploading recipe:", currentRecipe);
+    const recipeRef = collection(db, 'recipes');
+    // if recipe with same name exists, update it
+    const existingRecipe = recipes.find(r => r.name === currentRecipe.name);
+    if (existingRecipe) {
+      const recipeDoc = doc(recipeRef, existingRecipe.id);
+      updateDoc(recipeDoc, currentRecipe)
+        .then(() => console.log("Recipe updated successfully"))
+        .catch(error => console.error("Error updating recipe:", error));
+    } else {
+      addDoc(recipeRef, currentRecipe)
+        .then(() => console.log("Recipe uploaded successfully"))
+        .catch(error => console.error("Error uploading recipe:", error));
     }
-  };
+  }
 
   return (
     <div className="relative p-6">
@@ -168,14 +135,19 @@ const RecipeViewerPage = () => {
                 <ThumbsDown className="mr-2" /> Dislike ({dislikes})
               </Button>
             </div>
-            
+            <Button 
+              onClick={changeRecipe}
+              className="w-full"
+            >
+              Change Recipe
+            </Button>
           </CardContent>
         </Card>
 
         {/* Middle Column - Recipe Details */}
         <Card className="w-2/3">
           <CardContent className="p-6">
-            <div className="grid grid-rows-5 gap-4">
+            <div className="grid grid-rows-4 gap-4">
               <div className="flex items-center border-b pb-4">
                 <ChefHat className="mr-4 text-gray-600" />
                 <div>
@@ -193,14 +165,6 @@ const RecipeViewerPage = () => {
               </div>
 
               <div className="flex items-center border-b pb-4">
-                <Flame className="mr-4 text-gray-600" />
-                <div>
-                  <h3 className="font-semibold">Price</h3>
-                  {/* <p><RecipePriceCalculator currentRecipe={currentRecipe} /> cal</p> */}
-                </div>
-              </div>
-
-              <div className="flex items-center border-b pb-4">
                 <AlertTriangle className="mr-4 text-gray-600" />
                 <div>
                   <h3 className="font-semibold">Allergens</h3>
@@ -211,8 +175,11 @@ const RecipeViewerPage = () => {
               <div className="flex items-center">
                 <BookOpen className="mr-4 text-gray-600" />
                 <div>
+                  {/* <Button variant="link" className="p-0">
+                    View Full Recipe
+                  </Button> */}
                   <Button variant="link" className="p-0" onClick={uploadRecipe}>
-                    Upload Recipe
+                    Done Editing Recipe
                   </Button>
                 </div>
               </div>
@@ -224,4 +191,4 @@ const RecipeViewerPage = () => {
   );
 };
 
-export default RecipeViewerPage;
+export default recipeViewerPage;

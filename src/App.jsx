@@ -7,8 +7,8 @@ import WeeklyMenu from './pages/menuPage';
 import PantryPage from './pages/pantryPage';
 import RecipeDatabase from './pages/recipeDatabase';
 import RecipeViewerPage from './pages/recipeViewerPage';
-import recipeEntryPage from './pages/recipeEntryPage';
-import NavBar from './pages/navBar';
+import NavBar from './pages/navBar';  
+import EntryPage from './pages/recipeEntryPage';
 
 // Create auth context to share authentication state
 export const AuthContext = createContext();
@@ -77,7 +77,7 @@ function App() {
             path="/addrecipe" 
             element={
               isAuthenticated ? 
-              <recipeEntryPage /> : 
+              <EntryPage /> : 
               <Navigate to="/login" />
             } 
           />
