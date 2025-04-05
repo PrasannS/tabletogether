@@ -58,6 +58,8 @@ const WeeklyMenuPage = () => {
       const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       const randomizedMenu = {};
 
+      // TODO need a way for this to not be random every time
+
       weekDays.forEach(day => {
         randomizedMenu[day] = {
           lunch: lunchRecipes[Math.floor(Math.random() * lunchRecipes.length)],
@@ -175,6 +177,13 @@ const WeeklyMenuPage = () => {
                               <button onClick={() => handleLike(day, mealType)} className={`p-1 rounded ${isLiked ? 'bg-green-500 text-white' : 'bg-gray-200'}`}>👍</button>
                               <button onClick={() => handleDislike(day, mealType)} className={`p-1 rounded ${isDisliked ? 'bg-red-500 text-white' : 'bg-gray-200'}`}>👎</button>
                             </div>
+                            {/* View more button, TODO may need to fix up menu metadata a bit */}
+                            <button 
+                              onClick={() => navigate('/viewer', { state: { recipe: meal } })} 
+                              className="mt-2 text-blue-500 hover:underline"
+                            >
+                              View More
+                            </button>
                           </div>
                         </td>
                       );

@@ -49,7 +49,7 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, currentUser, logout: handleLogout }}>
-      {isAuthenticated && <NavBar />}
+      {isAuthenticated}
       
       <div className="container mx-auto px-4 py-4">
         {/* Page Routing */}

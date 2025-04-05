@@ -37,6 +37,8 @@ const RecipeViewerPage = () => {
     console.error("No recipe data was passed to the viewer");
     return <div className="p-6">No recipe data found. Please go back and try again.</div>;
   }
+  const navigate = useNavigate();
+
 
   const [currentRecipe, setCurrentRecipe] = useState({
     name: recipe.title,
@@ -132,10 +134,10 @@ const RecipeViewerPage = () => {
     <div className="relative p-6">
       {/* Top Right Buttons */}
       <div className="absolute top-6 right-6 flex space-x-4">
-        <Button variant="outline" className="flex items-center">
+        <Button variant="outline" className="flex items-center" onClick={() => navigate("/recipes")}>
           <BookmarkPlus className="mr-2" /> Recipe Book
         </Button>
-        <Button variant="outline" className="flex items-center">
+        <Button variant="outline" className="flex items-center" onClick={() => navigate("/menu")}>
           <Calendar className="mr-2" /> Weekly Menu
         </Button>
       </div>
