@@ -51,13 +51,17 @@ const WeeklyMenuPage = () => {
         return;
       }
 
+      // Separate recipes by mealType
+      const lunchRecipes = allRecipes.filter(recipe => recipe.mealType === 'lunch');
+      const dinnerRecipes = allRecipes.filter(recipe => recipe.mealType === 'dinner');
+
       const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       const randomizedMenu = {};
 
       weekDays.forEach(day => {
         randomizedMenu[day] = {
-          lunch: allRecipes[Math.floor(Math.random() * allRecipes.length)],
-          dinner: allRecipes[Math.floor(Math.random() * allRecipes.length)],
+          lunch: lunchRecipes[Math.floor(Math.random() * lunchRecipes.length)],
+          dinner: dinnerRecipes[Math.floor(Math.random() * dinnerRecipes.length)],
         };
       });
 
@@ -165,7 +169,7 @@ const WeeklyMenuPage = () => {
                                   <div className="w-20 h-16 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">No Image</div>
                                 )}
                               </div>
-                              <span className="font-medium">{meal?.title || 'No Meal Assigned'}</span>
+                              <span className="font-medium text-black">{meal?.title || 'No Meal Assigned'}</span>
                             </div>
                             <div className="flex space-x-2 mt-2">
                               <button onClick={() => handleLike(day, mealType)} className={`p-1 rounded ${isLiked ? 'bg-green-500 text-white' : 'bg-gray-200'}`}>👍</button>
