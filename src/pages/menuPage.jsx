@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useLocation} from 'react-router-dom';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from '../pages/firebasePage';
+import { setDoc, doc } from "firebase/firestore"; // Import setDoc and doc
 
 const WeeklyMenuPage = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -10,6 +11,10 @@ const WeeklyMenuPage = () => {
   const [menuData, setMenuData] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  
+  const location = useLocation();
+  const edrecipe = location.state?.edrecipe || null;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -40,10 +45,42 @@ const WeeklyMenuPage = () => {
 
   const fetchAndAssignMenu = async () => {
     setLoading(true);
+
+    // check "menus" collection to see if there is a menu for this week
+    const menusRef = collection(db, "menus");
+    const querySnapshot = await getDocs(menusRef);
+    const currentWeek = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    const menuDoc = querySnapshot.docs.find(doc => doc.id === currentWeek);
+    if (menuDoc) {
+      console.log("Menu found for this week:", menuDoc.data());
+      // if there is a menu for this week, assign it to menuData
+      const menu = menuDoc.data();
+      // if edrecipe is not null, then check if it's in the menu for that day / meal
+      // if not then update menu in the database
+      if (edrecipe) {
+        const day = edrecipe[0];
+        const mealType = edrecipe[1];
+        const meal = menu[day][mealType];
+        if (meal && meal.name !== edrecipe[2].name) {
+          console.log("Updating menu with new recipe:", edrecipe);
+          menu[day][mealType] = edrecipe[2];
+          await setDoc(doc(menusRef, currentWeek), menu);
+          console.log("Menu updated in Firestore:", menu);
+        }
+      }
+
+      setMenuData(menu);
+      setLoading(false);
+      
+
+      return;
+    }
+    // if not, fetch recipes from "recipes" collection and assign to menu
     try {
       const querySnapshot = await getDocs(collection(db, "recipes"));
       const allRecipes = querySnapshot.docs.map(doc => doc.data());
 
+      
       if (allRecipes.length === 0) {
         console.warn("No recipes found in Firestore");
         setMenuData({});
@@ -68,6 +105,11 @@ const WeeklyMenuPage = () => {
       });
 
       setMenuData(randomizedMenu);
+      // Save the generated menu to Firestore
+      const menusRef = collection(db, "menus");
+      await setDoc(doc(menusRef, currentWeek), randomizedMenu);
+      console.log("Menu saved to Firestore:", randomizedMenu);
+    
     } catch (error) {
       console.error("Error fetching menu:", error);
     }
@@ -117,6 +159,16 @@ const WeeklyMenuPage = () => {
       return prev;
     });
   };
+
+  // Logic to edit a recipe used in the menu (overlaid popup that will show a search bar with other recipes, and upon selection will replace initial selected recipe)
+  const editRecipe = (day_, mealType_) => {
+    const meal = menuData[day_]?.[mealType_];
+    console.log("Going to recipes");
+    if (meal) {
+      navigate('/recipes', { state: { editmode: true, mdata: {mealtype: mealType_, day: day_} } });
+    }
+  }
+
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
@@ -171,7 +223,7 @@ const WeeklyMenuPage = () => {
                                   <div className="w-20 h-16 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">No Image</div>
                                 )}
                               </div>
-                              <span className="font-medium text-black">{meal?.title || 'No Meal Assigned'}</span>
+                              <span className="font-medium text-black">{meal?.title || meal?.name}</span>
                             </div>
                             <div className="flex space-x-2 mt-2">
                               <button onClick={() => handleLike(day, mealType)} className={`p-1 rounded ${isLiked ? 'bg-green-500 text-white' : 'bg-gray-200'}`}>👍</button>
@@ -183,6 +235,13 @@ const WeeklyMenuPage = () => {
                               className="mt-2 text-blue-500 hover:underline"
                             >
                               View More
+                            </button>
+                            {/* Edit button */}
+                            <button 
+                              onClick={() => editRecipe(day, mealType)} 
+                              className="mt-2 text-yellow-500 hover:underline"
+                            >
+                              Edit
                             </button>
                           </div>
                         </td>

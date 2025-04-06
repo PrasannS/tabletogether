@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, onSnapshot, where } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useLocation} from 'react-router-dom';
 import { 
   getFirestore, 
   addDoc, 
@@ -13,7 +13,6 @@ import {
 
 const RecipeSearch = () => {
 
-
   const firebaseConfig = {
     apiKey: "AIzaSyAPFn9zzoCufbohVJ5VDcUC6gBtPC7IB_o",
     authDomain: "tabletogether.firebaseapp.com",
@@ -22,11 +21,19 @@ const RecipeSearch = () => {
     messagingSenderId: "536905524696",
     appId: "1:536905524696:web:e93dcac6f4106ca8a73ead"
   };
+  const navigate = useNavigate();
   
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+
+
+  const location = useLocation();
+  const editMode = location.state?.editmode || false;
+  console.log("Edit mode:", location.state?.editmode);
+
+  const mdata = location.state?.mdata || null;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
@@ -116,9 +123,29 @@ const RecipeSearch = () => {
     }));
   };
 
+  const titleHandle = () => {
+    if (editMode) {
+      return <h1 className="text-3xl font-bold mb-6 text-center"> Select New Recipe</h1>;
+    } else {
+      return <h1 className="text-3xl font-bold mb-6 text-center"> Recipe Database</h1>;
+    }
+  }
+
+  const handleRecipeSelect = (recipe) => {
+    // Handle recipe selection logic here
+    console.log("Selected recipe:", recipe);
+    if (editMode) {
+      // Navigate to the viewer page with the selected recipe data
+      navigate('/', { state: { edrecipe: [mdata.day, mdata.mealtype, recipe]} });
+    } else {
+      // Navigate to the viewer page with the selected recipe data
+      navigate('/viewer', { state: { recipe: recipe } });
+    }
+  }
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Recipe Finder</h1>
+
+      {titleHandle()}
       
       {/* Search Input */}
       <div className="mb-6">
@@ -168,12 +195,13 @@ const RecipeSearch = () => {
             <div className="w-1/3 max-w-xs bg-gray-200">
               <img 
                 src={recipe.image || '/api/placeholder/200/150'} 
-                alt={recipe.title} 
+                alt={recipe.name} 
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="flex-1 p-4">
-              <h2 className="text-xl font-semibold mb-2">{recipe.title}</h2>
+              {/* TODO unify name / title metadata */}
+              <h2 className="text-xl font-semibold mb-2">{recipe.name || recipe.title}</h2>
               <div className="flex flex-wrap gap-2 mb-2">
                 {recipe.vegetarian && (
                   <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Vegetarian</span>
@@ -191,6 +219,13 @@ const RecipeSearch = () => {
               <div className="text-gray-700">
                 <span className="font-medium">{recipe.calories}</span> calories per serving
               </div>
+              {/* Selection button */}
+              <button
+                onClick={() => handleRecipeSelect(recipe)}
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+              >
+                {editMode ? 'Select Recipe' : 'View Recipe'}
+              </button>
             </div>
           </div>
         ))}
