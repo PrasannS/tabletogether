@@ -7,8 +7,8 @@ import WeeklyMenu from './pages/menuPage';
 import PantryPage from './pages/pantryPage';
 import RecipeDatabase from './pages/recipeDatabase';
 import RecipeViewerPage from './pages/recipeViewerPage';
-import NotesApp from './pages/firebasePage';
-import NavBar from './pages/navBar';
+import NavBar from './pages/navBar';  
+import EntryPage from './pages/recipeEntryPage';
 
 // Create auth context to share authentication state
 export const AuthContext = createContext();
@@ -49,7 +49,7 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, currentUser, logout: handleLogout }}>
-      {isAuthenticated && <NavBar />}
+      {isAuthenticated}
       
       <div className="container mx-auto px-4 py-4">
         {/* Page Routing */}
@@ -74,6 +74,14 @@ function App() {
             } 
           />
           <Route 
+            path="/addrecipe" 
+            element={
+              isAuthenticated ? 
+              <EntryPage /> : 
+              <Navigate to="/login" />
+            } 
+          />
+          <Route 
             path="/pantry" 
             element={
               isAuthenticated ? 
@@ -90,14 +98,6 @@ function App() {
             } 
           />
           <Route 
-            path="/firebase" 
-            element={
-              isAuthenticated ? 
-              <NotesApp /> : 
-              <Navigate to="/login" />
-            } 
-          />
-          <Route 
             path="/viewer" 
             element={
               isAuthenticated ? 
@@ -105,6 +105,8 @@ function App() {
               <Navigate to="/login" />
             } 
           />
+          
+          
 
           {/* Redirect any unknown routes to login */}
           <Route path="*" element={<Navigate to={isAuthenticated ? "/" : "/login"} />} />

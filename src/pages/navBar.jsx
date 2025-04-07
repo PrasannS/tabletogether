@@ -14,7 +14,7 @@ const NavBar = () => {
           <Link to="/pantryPage" className="hover:text-blue-200">Pantry</Link>
           <Link to="/recipes" className="hover:text-blue-200">Recipes</Link>
           <Link to="/viewer" className="hover:text-blue-200">Recipe Viewer</Link>
-          <Link to="/firebase" className="hover:text-blue-200">Notes</Link>
+          <Link to="/addrecipe" className="hover:text-blue-200">Add</Link>
         </div>
         
         <div className="flex items-center space-x-4">

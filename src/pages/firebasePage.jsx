@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
+
 import { 
   getFirestore, 
   collection, 
@@ -9,6 +10,21 @@ import {
   updateDoc,
   deleteDoc
 } from 'firebase/firestore';
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAPFn9zzoCufbohVJ5VDcUC6gBtPC7IB_o",
+  authDomain: "tabletogether.firebaseapp.com",
+  projectId: "tabletogether",
+  storageBucket: "tabletogether.firebasestorage.app",
+  messagingSenderId: "536905524696",
+  appId: "1:536905524696:web:e93dcac6f4106ca8a73ead"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+export { db };
 
 // Main App Component
 const NotesApp = () => {
