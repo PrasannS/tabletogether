@@ -1,118 +1,123 @@
-// Starter code will be the same as recipe database so don't do that one yet
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const RecipeSearch = () => {
+const PantryPage = () => {
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState({
-    vegetarian: false,
-    vegan: false,
-    glutenFree: false,
-    dairyFree: false,
+    perishable: false,
+    organic: false,
+    refrigerated: false,
+    lowStock: false,
   });
-  const [recipes, setRecipes] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Mock data to simulate API response
-  const mockRecipes = [
+  const mockIngredients = [
     {
       id: 1,
-      title: 'Vegetable Stir Fry',
-      calories: 320,
-      vegetarian: true,
-      vegan: true,
-      glutenFree: true,
-      dairyFree: true,
+      name: 'Organic Carrots',
+      quantity: 12,
+      unit: 'pieces',
+      perishable: true,
+      organic: true,
+      refrigerated: true,
+      lowStock: false,
       image: '/api/placeholder/200/150'
     },
     {
       id: 2,
-      title: 'Chicken Alfredo Pasta',
-      calories: 650,
-      vegetarian: false,
-      vegan: false,
-      glutenFree: false,
-      dairyFree: false,
+      name: 'All-Purpose Flour',
+      quantity: 4,
+      unit: 'cups',
+      perishable: false,
+      organic: false,
+      refrigerated: false,
+      lowStock: false,
       image: '/api/placeholder/200/150'
     },
     {
       id: 3,
-      title: 'Greek Salad',
-      calories: 280,
-      vegetarian: true,
-      vegan: false,
-      glutenFree: true,
-      dairyFree: false,
+      name: 'Greek Yogurt',
+      quantity: 1,
+      unit: 'container',
+      perishable: true,
+      organic: false,
+      refrigerated: true,
+      lowStock: true,
       image: '/api/placeholder/200/150'
     },
     {
       id: 4,
-      title: 'Vegan Buddha Bowl',
-      calories: 420,
-      vegetarian: true,
-      vegan: true,
-      glutenFree: true,
-      dairyFree: true,
+      name: 'Organic Quinoa',
+      quantity: 3,
+      unit: 'cups',
+      perishable: false,
+      organic: true,
+      refrigerated: false,
+      lowStock: false,
       image: '/api/placeholder/200/150'
     },
     {
       id: 5,
-      title: 'Beef Burger',
-      calories: 580,
-      vegetarian: false,
-      vegan: false,
-      glutenFree: false,
-      dairyFree: false,
+      name: 'Ground Beef',
+      quantity: 0.5,
+      unit: 'lbs',
+      perishable: true,
+      organic: false,
+      refrigerated: true,
+      lowStock: true,
       image: '/api/placeholder/200/150'
     },
     {
       id: 6,
-      title: 'Gluten-Free Pancakes',
-      calories: 340,
-      vegetarian: true,
-      vegan: false,
-      glutenFree: true,
-      dairyFree: false,
+      name: 'Organic Honey',
+      quantity: 2,
+      unit: 'tbsp',
+      perishable: false,
+      organic: true,
+      refrigerated: false,
+      lowStock: true,
       image: '/api/placeholder/200/150'
     }
   ];
 
-  // Search and filter recipes
+  // Search and filter ingredients
   useEffect(() => {
-    const searchRecipes = () => {
+    const searchIngredients = () => {
       setLoading(true);
       setError(null);
       
       try {
         // Simulate API request delay
         setTimeout(() => {
-          let filteredRecipes = [...mockRecipes];
+          let filteredIngredients = [...mockIngredients];
           
           // Filter by search query
           if (query) {
-            filteredRecipes = filteredRecipes.filter(recipe => 
-              recipe.title.toLowerCase().includes(query.toLowerCase())
+            filteredIngredients = filteredIngredients.filter(ingredient => 
+              ingredient.name.toLowerCase().includes(query.toLowerCase())
             );
           }
           
-          // Apply dietary filters
+          // Apply category filters
           Object.keys(filters).forEach(filter => {
             if (filters[filter]) {
-              filteredRecipes = filteredRecipes.filter(recipe => recipe[filter]);
+              filteredIngredients = filteredIngredients.filter(ingredient => ingredient[filter]);
             }
           });
           
-          setRecipes(filteredRecipes);
+          setIngredients(filteredIngredients);
           setLoading(false);
         }, 500);
       } catch (err) {
-        setError('Failed to fetch recipes. Please try again.');
+        setError('Failed to fetch pantry items. Please try again.');
         setLoading(false);
       }
     };
     
-    searchRecipes();
+    searchIngredients();
   }, [query, filters]);
 
   // Handle search input change
@@ -130,13 +135,13 @@ const RecipeSearch = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Recipe Finder</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Pantry</h1>
       
       {/* Search Input */}
       <div className="mb-6">
         <input
           type="text"
-          placeholder="Search recipes..."
+          placeholder="Search ingredients..."
           value={query}
           onChange={handleQueryChange}
           className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -145,7 +150,7 @@ const RecipeSearch = () => {
       
       {/* Filter Options */}
       <div className="flex flex-wrap gap-3 mb-6">
-        <div className="text-lg font-medium mr-2">Dietary Filters:</div>
+        <div className="text-lg font-medium mr-2">Category Filters:</div>
         {Object.keys(filters).map((filter) => (
           <button
             key={filter}
@@ -162,46 +167,46 @@ const RecipeSearch = () => {
       </div>
       
       {/* Loading State */}
-      {loading && <div className="text-center py-4">Loading recipes...</div>}
+      {loading && <div className="text-center py-4">Loading pantry items...</div>}
       
       {/* Error State */}
       {error && <div className="text-center text-red-500 py-4">{error}</div>}
       
       {/* Results */}
       <div className="space-y-4">
-        {!loading && recipes.length === 0 && (
+        {!loading && ingredients.length === 0 && (
           <div className="text-center py-8 text-gray-500">
-            No recipes found. Try adjusting your search or filters.
+            No ingredients found. Try adjusting your search or filters.
           </div>
         )}
         
-        {recipes.map(recipe => (
-          <div key={recipe.id} className="flex border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+        {ingredients.map(ingredient => (
+          <div key={ingredient.id} className="flex border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
             <div className="w-1/3 max-w-xs bg-gray-200">
               <img 
-                src={recipe.image} 
-                alt={recipe.title} 
+                src={ingredient.image} 
+                alt={ingredient.name} 
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="flex-1 p-4">
-              <h2 className="text-xl font-semibold mb-2">{recipe.title}</h2>
+              <h2 className="text-xl font-semibold mb-2">{ingredient.name}</h2>
               <div className="flex flex-wrap gap-2 mb-2">
-                {recipe.vegetarian && (
-                  <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Vegetarian</span>
+                {ingredient.perishable && (
+                  <span className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Perishable</span>
                 )}
-                {recipe.vegan && (
-                  <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Vegan</span>
+                {ingredient.organic && (
+                  <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Organic</span>
                 )}
-                {recipe.glutenFree && (
-                  <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">Gluten-Free</span>
+                {ingredient.refrigerated && (
+                  <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Refrigerated</span>
                 )}
-                {recipe.dairyFree && (
-                  <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Dairy-Free</span>
+                {ingredient.lowStock && (
+                  <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Low Stock</span>
                 )}
               </div>
               <div className="text-gray-700">
-                <span className="font-medium">{recipe.calories}</span> calories per serving
+                <span className="font-medium">{ingredient.quantity} {ingredient.unit}</span> in stock
               </div>
             </div>
           </div>
@@ -211,4 +216,4 @@ const RecipeSearch = () => {
   );
 };
 
-export default RecipeSearch;
+export default PantryPage;

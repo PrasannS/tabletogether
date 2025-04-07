@@ -11,7 +11,7 @@ const NavBar = () => {
         <div className="flex space-x-4">
           <Link to="/" className="font-bold text-xl">Recipe Planner</Link>
           <Link to="/" className="hover:text-blue-200">Menu</Link>
-          <Link to="/pantry" className="hover:text-blue-200">Pantry</Link>
+          <Link to="/pantryPage" className="hover:text-blue-200">Pantry</Link>
           <Link to="/recipes" className="hover:text-blue-200">Recipes</Link>
           <Link to="/viewer" className="hover:text-blue-200">Recipe Viewer</Link>
           <Link to="/firebase" className="hover:text-blue-200">Notes</Link>
