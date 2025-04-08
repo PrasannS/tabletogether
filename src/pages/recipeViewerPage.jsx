@@ -177,7 +177,7 @@ const RecipeViewerPage = () => {
         {/* Middle Column - Recipe Details */}
         <Card className="w-2/3">
           <CardContent className="p-6">
-            <div className="grid grid-rows-5 gap-4">
+            <div className="flex flex-col gap-4">
               <div className="flex items-center border-b pb-4">
                 <ChefHat className="mr-4 text-gray-600" />
                 <div>
@@ -210,18 +210,29 @@ const RecipeViewerPage = () => {
                 </div>
               </div>
               <div>
-              <div className="flex items-center">
-                <BookOpen className="mr-4 text-gray-600" />
-                  <div>
-                    <Button variant="link" className="p-0" onClick={uploadRecipe}>
-                      Upload Recipe
-                    </Button>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">Instructions</h3>
-                    <p>{currentRecipe.instructions}</p>
-                  </div>
+
+              {/* Given list of instructions in currenRecipe.instructions, show as a bulleted list */}
+              <div className="mt-4">
+                  <h3 className="font-semibold">Ingredients</h3>
+                  <ul className="list-disc pl-6 space-y-2">
+                    {currentRecipe.ingredients.map((instruction, index) => (
+                      <li key={index}>{instruction}</li>
+                    ))}
+                  </ul>
                 </div>
+
+                
+                  {/* Given list of instructions in currenRecipe.instructions, show as a bulleted list  (left-aligned)*/}
+                <div className="mt-4">
+                  <h3 className="font-semibold">Instructions</h3>
+                  <ul className="list-disc pl-6 space-y-2">
+                    {currentRecipe.instructions.map((instruction, index) => (
+                      <li key={index}>{instruction}</li>
+                    ))}
+                  </ul>
+                </div>
+
+            
               </div>
             </div>
           </CardContent>
