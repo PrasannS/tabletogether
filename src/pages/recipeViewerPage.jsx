@@ -30,51 +30,50 @@ import {
 
 const RecipeViewerPage = () => {
 
-  const [editingInstructionIndex, setEditingInstructionIndex] = useState(null);
-  const [editingIngredientIndex, setEditingIngredientIndex] = useState(null);
-  const [editedText, setEditedText] = useState('');
+  const [editingMode, setEditingMode] = useState(null); // 'instructions' or 'ingredients' or null
+  const [batchEditText, setBatchEditText] = useState('');
 
-  const handleInstructionEdit = (index) => {
-    setEditingInstructionIndex(index);
-    setEditedText(currentRecipe.instructions[index]);
+  const handleStartEdit = (type) => {
+    // Convert array to newline-separated text for editing
+    const text = type === 'instructions' 
+      ? currentRecipe.instructions.join('\n') 
+      : currentRecipe.ingredients.join('\n');
+    
+    setBatchEditText(text);
+    setEditingMode(type);
   };
 
-  const handleIngredientEdit = (index) => {
-    setEditingIngredientIndex(index);
-    setEditedText(currentRecipe.ingredients[index]);
-  };
-
-  const saveInstructionEdit = () => {
-    if (editingInstructionIndex !== null) {
-      const updatedInstructions = [...currentRecipe.instructions];
-      updatedInstructions[editingInstructionIndex] = editedText;
+  const handleSaveEdit = () => {
+    if (editingMode === 'instructions') {
+      // Split by newline and filter empty strings
+      const updatedInstructions = batchEditText
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item !== '');
+        
       setCurrentRecipe({
         ...currentRecipe,
         instructions: updatedInstructions
       });
-      setEditingInstructionIndex(null);
-    }
-  };
-
-  const saveIngredientEdit = () => {
-    if (editingIngredientIndex !== null) {
-      const updatedIngredients = [...currentRecipe.ingredients];
-      updatedIngredients[editingIngredientIndex] = editedText;
+    } else if (editingMode === 'ingredients') {
+      const updatedIngredients = batchEditText
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item !== '');
+        
       setCurrentRecipe({
         ...currentRecipe,
         ingredients: updatedIngredients
       });
-      setEditingIngredientIndex(null);
     }
+    
+    // Exit editing mode
+    setEditingMode(null);
   };
 
-  const handleKeyDown = (e, saveFunction) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      saveFunction();
-    } else if (e.key === 'Escape') {
-      setEditingInstructionIndex(null);
-      setEditingIngredientIndex(null);
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      setEditingMode(null);
     }
   };
 
@@ -262,61 +261,91 @@ const RecipeViewerPage = () => {
               </div>
               <div>
 
-              {/* Given list of instructions in currenRecipe.instructions, show as a bulleted list (where each item can be edited with corresponding changes to state) */}
-              <div>
+              <div className="mb-6">
                 <h3 className="font-semibold">Instructions</h3>
-                <ul className="list-disc pl-6">
-                  {currentRecipe.instructions.map((instruction, index) => (
-                    <li key={index} className="mb-2">
-                      {editingInstructionIndex === index ? (
-                        <textarea
-                          className="w-full p-1 border rounded"
-                          value={editedText}
-                          onChange={(e) => setEditedText(e.target.value)}
-                          onBlur={saveInstructionEdit}
-                          onKeyDown={(e) => handleKeyDown(e, saveInstructionEdit)}
-                          autoFocus
-                          rows={Math.max(2, Math.ceil(instruction.length / 40))}
-                        />
-                      ) : (
-                        <div 
-                          onClick={() => handleInstructionEdit(index)}
-                          className="cursor-pointer hover:bg-gray-100 p-1 rounded"
-                        >
+                {editingMode === 'instructions' ? (
+                  <div className="mt-2">
+                    <textarea
+                      className="w-full p-2 border rounded"
+                      value={batchEditText}
+                      onChange={(e) => setBatchEditText(e.target.value)}
+                      rows={Math.max(5, currentRecipe.instructions.length + 2)}
+                      autoFocus
+                      onKeyDown={handleKeyDown}
+                    />
+                    <div className="mt-2 flex gap-2">
+                      <button 
+                        className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        onClick={handleSaveEdit}
+                      >
+                        Save
+                      </button>
+                      <button 
+                        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                        onClick={() => setEditingMode(null)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div 
+                    className="mt-2 border border-transparent hover:border-gray-200 p-2 rounded cursor-pointer"
+                    onClick={() => handleStartEdit('instructions')}
+                  >
+                    <ul className="list-disc pl-6">
+                      {currentRecipe.instructions.map((instruction, index) => (
+                        <li key={index} className="mb-2">
                           {instruction}
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-              <div>
-                <h3 className="font-semibold">Ingredients</h3>
-                <ul className="list-disc pl-6">
-                  {currentRecipe.ingredients.map((ingredient, index) => (
-                    <li key={index} className="mb-2">
-                      {editingIngredientIndex === index ? (
-                        <input
-                          type="text"
-                          className="w-full p-1 border rounded"
-                          value={editedText}
-                          onChange={(e) => setEditedText(e.target.value)}
-                          onBlur={saveIngredientEdit}
-                          onKeyDown={(e) => handleKeyDown(e, saveIngredientEdit)}
-                          autoFocus
-                        />
-                      ) : (
-                        <div 
-                          onClick={() => handleIngredientEdit(index)}
-                          className="cursor-pointer hover:bg-gray-100 p-1 rounded"
-                        >
-                          {ingredient}
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+
+            <div>
+              <h3 className="font-semibold">Ingredients</h3>
+              {editingMode === 'ingredients' ? (
+                <div className="mt-2">
+                  <textarea
+                    className="w-full p-2 border rounded"
+                    value={batchEditText}
+                    onChange={(e) => setBatchEditText(e.target.value)}
+                    rows={Math.max(5, currentRecipe.ingredients.length + 2)}
+                    autoFocus
+                    onKeyDown={handleKeyDown}
+                  />
+                  <div className="mt-2 flex gap-2">
+                    <button 
+                      className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                      onClick={handleSaveEdit}
+                    >
+                      Save
+                    </button>
+                    <button 
+                      className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                      onClick={() => setEditingMode(null)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div 
+                  className="mt-2 border border-transparent hover:border-gray-200 p-2 rounded cursor-pointer"
+                  onClick={() => handleStartEdit('ingredients')}
+                >
+                  <ul className="list-disc pl-6">
+                    {currentRecipe.ingredients.map((ingredient, index) => (
+                      <li key={index} className="mb-2">
+                        {ingredient}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
 
               {/* Button that uploads recipe and goes back to home page */}
               <Button 
@@ -329,7 +358,6 @@ const RecipeViewerPage = () => {
               >
                 Save Recipe
               </Button>
-
             
               </div>
             </div>
