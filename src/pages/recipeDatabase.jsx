@@ -157,6 +157,17 @@ const RecipeSearch = () => {
           className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
+
+      {/* Add Recipe Button */}
+      <div className="mb-6">
+        <button
+          onClick={() => navigate('/addrecipe')}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+        >
+          Add New Recipe
+        </button>
+      </div>
+      {/* Recipe Count */}
       
       {/* Filter Options */}
       <div className="flex flex-wrap gap-3 mb-6">
