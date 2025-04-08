@@ -29,6 +29,55 @@ import {
 
 
 const RecipeViewerPage = () => {
+
+  const [editingInstructionIndex, setEditingInstructionIndex] = useState(null);
+  const [editingIngredientIndex, setEditingIngredientIndex] = useState(null);
+  const [editedText, setEditedText] = useState('');
+
+  const handleInstructionEdit = (index) => {
+    setEditingInstructionIndex(index);
+    setEditedText(currentRecipe.instructions[index]);
+  };
+
+  const handleIngredientEdit = (index) => {
+    setEditingIngredientIndex(index);
+    setEditedText(currentRecipe.ingredients[index]);
+  };
+
+  const saveInstructionEdit = () => {
+    if (editingInstructionIndex !== null) {
+      const updatedInstructions = [...currentRecipe.instructions];
+      updatedInstructions[editingInstructionIndex] = editedText;
+      setCurrentRecipe({
+        ...currentRecipe,
+        instructions: updatedInstructions
+      });
+      setEditingInstructionIndex(null);
+    }
+  };
+
+  const saveIngredientEdit = () => {
+    if (editingIngredientIndex !== null) {
+      const updatedIngredients = [...currentRecipe.ingredients];
+      updatedIngredients[editingIngredientIndex] = editedText;
+      setCurrentRecipe({
+        ...currentRecipe,
+        ingredients: updatedIngredients
+      });
+      setEditingIngredientIndex(null);
+    }
+  };
+
+  const handleKeyDown = (e, saveFunction) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      saveFunction();
+    } else if (e.key === 'Escape') {
+      setEditingInstructionIndex(null);
+      setEditingIngredientIndex(null);
+    }
+  };
+
   // get recipe from the recipeEntryPage
   const location = useLocation();
   const recipe = location.state?.recipe;
@@ -41,7 +90,7 @@ const RecipeViewerPage = () => {
 
 
   const [currentRecipe, setCurrentRecipe] = useState({
-    name: recipe.title,
+    name: recipe.title || recipe.name,
     servings: "",
     ingredients: recipe.ingredients,
     instructions: recipe.instructions,
@@ -83,11 +132,13 @@ const RecipeViewerPage = () => {
       // Reference to the recipes collection
       const recipesRef = collection(db, 'recipes');
       
+
       // Query to check if a recipe with the same name exists
       const q = query(recipesRef, where("name", "==", currentRecipe.name));
       const querySnapshot = await getDocs(q);
       
       if (!querySnapshot.empty) {
+        console.log("recipe with same name exists, updating it: ")
         // Recipe with same name exists, update it
         const recipeDoc = querySnapshot.docs[0];
         const recipeId = recipeDoc.id;
@@ -211,26 +262,73 @@ const RecipeViewerPage = () => {
               </div>
               <div>
 
-              {/* Given list of instructions in currenRecipe.instructions, show as a bulleted list */}
-              <div className="mt-4">
-                  <h3 className="font-semibold">Ingredients</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    {currentRecipe.ingredients.map((instruction, index) => (
-                      <li key={index}>{instruction}</li>
-                    ))}
-                  </ul>
-                </div>
+              {/* Given list of instructions in currenRecipe.instructions, show as a bulleted list (where each item can be edited with corresponding changes to state) */}
+              <div>
+                <h3 className="font-semibold">Instructions</h3>
+                <ul className="list-disc pl-6">
+                  {currentRecipe.instructions.map((instruction, index) => (
+                    <li key={index} className="mb-2">
+                      {editingInstructionIndex === index ? (
+                        <textarea
+                          className="w-full p-1 border rounded"
+                          value={editedText}
+                          onChange={(e) => setEditedText(e.target.value)}
+                          onBlur={saveInstructionEdit}
+                          onKeyDown={(e) => handleKeyDown(e, saveInstructionEdit)}
+                          autoFocus
+                          rows={Math.max(2, Math.ceil(instruction.length / 40))}
+                        />
+                      ) : (
+                        <div 
+                          onClick={() => handleInstructionEdit(index)}
+                          className="cursor-pointer hover:bg-gray-100 p-1 rounded"
+                        >
+                          {instruction}
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold">Ingredients</h3>
+                <ul className="list-disc pl-6">
+                  {currentRecipe.ingredients.map((ingredient, index) => (
+                    <li key={index} className="mb-2">
+                      {editingIngredientIndex === index ? (
+                        <input
+                          type="text"
+                          className="w-full p-1 border rounded"
+                          value={editedText}
+                          onChange={(e) => setEditedText(e.target.value)}
+                          onBlur={saveIngredientEdit}
+                          onKeyDown={(e) => handleKeyDown(e, saveIngredientEdit)}
+                          autoFocus
+                        />
+                      ) : (
+                        <div 
+                          onClick={() => handleIngredientEdit(index)}
+                          className="cursor-pointer hover:bg-gray-100 p-1 rounded"
+                        >
+                          {ingredient}
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-                
-                  {/* Given list of instructions in currenRecipe.instructions, show as a bulleted list  (left-aligned)*/}
-                <div className="mt-4">
-                  <h3 className="font-semibold">Instructions</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    {currentRecipe.instructions.map((instruction, index) => (
-                      <li key={index}>{instruction}</li>
-                    ))}
-                  </ul>
-                </div>
+              {/* Button that uploads recipe and goes back to home page */}
+              <Button 
+                variant="outline" 
+                className="mt-4 w-full" 
+                onClick={() => {
+                  uploadRecipe();
+                  navigate("/recipes");
+                }}
+              >
+                Save Recipe
+              </Button>
 
             
               </div>
