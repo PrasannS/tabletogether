@@ -209,13 +209,18 @@ const RecipeViewerPage = () => {
                   <p>{currentRecipe.allergens.join(", ")}</p>
                 </div>
               </div>
-
+              <div>
               <div className="flex items-center">
                 <BookOpen className="mr-4 text-gray-600" />
-                <div>
-                  <Button variant="link" className="p-0" onClick={uploadRecipe}>
-                    Upload Recipe
-                  </Button>
+                  <div>
+                    <Button variant="link" className="p-0" onClick={uploadRecipe}>
+                      Upload Recipe
+                    </Button>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Instructions</h3>
+                    <p>{currentRecipe.instructions}</p>
+                  </div>
                 </div>
               </div>
             </div>
