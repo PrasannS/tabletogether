@@ -189,11 +189,11 @@ const WeeklyMenuPage = () => {
             <table className="min-w-full border-collapse table-fixed">
               <thead>
                 <tr>
-                  <th className="w-24 p-3 bg-[#f5e8d5] text-gray-800 border text-left">Meal</th>
+                  <th className="w-1/8 p-3 bg-[#f5e8d5] text-gray-800 border text-left">Meal</th>
                   {daysOfWeek.map((date, index) => {
                     const day = date.toLocaleDateString('en-US', { weekday: 'long' });
                     return (
-                      <th key={index} className="w-1/7 p-3 text-center font-semibold border bg-[#f5e8d5] text-gray-800">
+                      <th key={index} className="w-1/8 p-3 text-center font-semibold border bg-[#f5e8d5] text-gray-800">
                         <div>{day}</div>
                         <div className="text-sm text-gray-600">{date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
                       </th>
@@ -203,7 +203,7 @@ const WeeklyMenuPage = () => {
               </thead>
               <tbody>
                 {['lunch', 'dinner'].map((mealType) => (
-                  <tr key={mealType} className="h-40">
+                  <tr key={mealType} className="h-64">
                     <td className="w-24 p-3 font-medium bg-gray-50 text-gray-600 border capitalize">{mealType}</td>
                     {daysOfWeek.map((date, index) => {
                       const day = date.toLocaleDateString('en-US', { weekday: 'long' });
@@ -213,38 +213,58 @@ const WeeklyMenuPage = () => {
                       const isDisliked = dislikedMeals[mealId];
                       const meal = menuData[day]?.[mealType];
                       return (
-                        <td key={index} className={`p-3 text-center border ${isCurrentDay ? 'bg-blue-50' : ''}`}>
-                          <div className="flex flex-col items-center h-full justify-between">
-                            <div className="flex flex-col items-center">
-                              <div className="w-24 h-24 flex items-center justify-center mb-2">
-                                {meal?.image ? (
-                                  <img src={meal.image} alt={meal.title} className="w-20 h-16 object-cover rounded" />
-                                ) : (
-                                  <div className="w-20 h-16 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">No Image</div>
-                                )}
-                              </div>
-                              <span className="font-medium text-black">{meal?.title || meal?.name}</span>
-                            </div>
-                            <div className="flex space-x-2 mt-2">
-                              <button onClick={() => handleLike(day, mealType)} className={`p-1 rounded ${isLiked ? 'bg-green-500 text-white' : 'bg-gray-200'}`}>👍</button>
-                              <button onClick={() => handleDislike(day, mealType)} className={`p-1 rounded ${isDisliked ? 'bg-red-500 text-white' : 'bg-gray-200'}`}>👎</button>
-                            </div>
-                            {/* View more button, TODO may need to fix up menu metadata a bit */}
-                            <button 
-                              onClick={() => navigate('/viewer', { state: { recipe: meal } })} 
-                              className="mt-2 text-blue-500 hover:underline"
-                            >
-                              View More
-                            </button>
-                            {/* Edit button */}
-                            <button 
-                              onClick={() => editRecipe(day, mealType)} 
-                              className="mt-2 text-yellow-500 hover:underline"
-                            >
-                              Edit
-                            </button>
-                          </div>
-                        </td>
+                        <td key={index} className={`p-3 align-top border ${isCurrentDay ? 'bg-blue-50' : ''} h-64`}>
+							<div className="flex flex-col justify-between h-full">
+								<div>
+								<div className="w-32 h-32 flex items-center justify-center mb-3 mx-auto">
+									{meal?.image ? (
+									<img src={meal.image} alt={meal.title} className="w-28 h-28 object-cover rounded" />
+									) : (
+									<div className="w-28 h-28 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">No Image</div>
+									)}
+								</div>
+								<span className="font-medium text-center text-black block">{meal?.title || meal?.name}</span>
+								<div className="flex justify-center space-x-2 mt-2">
+								<button
+									onClick={() => handleLike(day, mealType)}
+									className={`p-1 rounded border transition 
+										${isLiked ? 'bg-green-100 border-green-400 text-green-700' : 'bg-white border-gray-300 text-gray-500 hover:bg-green-50'}`}
+									>
+									👍
+									</button>
+
+									<button
+									onClick={() => handleDislike(day, mealType)}
+									className={`p-1 rounded border transition 
+										${isDisliked ? 'bg-red-100 border-red-400 text-red-700' : 'bg-white border-gray-300 text-gray-500 hover:bg-red-50'}`}
+									>
+									👎
+									</button>
+								</div>
+								</div>
+
+								{/* Spacer to push buttons down */}
+								<div className="flex-grow" />
+
+								<div className="flex flex-col items-center mt-4">
+								<button
+									onClick={() => navigate('/viewer', { state: { recipe: meal } })}
+									className="px-3 py-1 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-full text-sm transition"
+									>
+									View More
+									</button>
+
+									<button
+									onClick={() => editRecipe(day, mealType)}
+									className="px-3 py-1 text-yellow-600 bg-yellow-50 hover:bg-yellow-100 rounded-full text-sm transition"
+									>
+									Edit
+									</button>
+								</div>
+							</div>
+							</td>
+
+
                       );
                     })}
                   </tr>
