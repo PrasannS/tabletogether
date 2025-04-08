@@ -175,7 +175,7 @@ const RecipeViewerPage = () => {
         </Card>
 
         {/* Middle Column - Recipe Details */}
-        <Card className="w-2/3">
+        <Card className="w-2/3 text-left">
           <CardContent className="p-6">
             <div className="flex flex-col gap-4">
               <div className="flex items-center border-b pb-4">
