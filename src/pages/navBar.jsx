@@ -6,16 +6,46 @@ const NavBar = () => {
   const { currentUser, logout } = useContext(AuthContext);
 
   return (
-    <nav className="bg-amber-800 text-white p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="flex space-x-4">
-          <Link to="/" className="font-bold text-xl">Recipe Planner</Link>
-          <Link to="/" className="hover:text-blue-200">Menu</Link>
-          <Link to="/pantryPage" className="hover:text-blue-200">Pantry</Link>
-          <Link to="/recipes" className="hover:text-blue-200">Recipes</Link>
-          <Link to="/viewer" className="hover:text-blue-200">Recipe Viewer</Link>
-          <Link to="/addrecipe" className="hover:text-blue-200">Add</Link>
-        </div>
+    <nav className="bg-[#6d8d4f] text-white p-4">
+    <div className="container mx-auto flex justify-between items-center text-center">
+      <div className="flex space-x-2">
+        <Link 
+          to="/" 
+          className="bg-[#4d693a] hover:bg-[#5f7d47] text-white font-bold py-2 px-4 rounded transition"
+        >
+          Recipe Planner
+        </Link>
+        <Link 
+          to="/" 
+          className="bg-[#4d693a] hover:bg-[#5f7d47] text-white py-2 px-4 rounded transition"
+        >
+          Menu
+        </Link>
+        <Link 
+          to="/pantry" 
+          className="bg-[#4d693a] hover:bg-[#5f7d47] text-white py-2 px-4 rounded transition"
+        >
+          Pantry
+        </Link>
+        <Link 
+          to="/recipes" 
+          className="bg-[#4d693a] hover:bg-[#5f7d47] text-white py-2 px-4 rounded transition"
+        >
+          Recipes
+        </Link>
+        <Link 
+          to="/viewer" 
+          className="bg-[#4d693a] hover:bg-[#5f7d47] text-white py-2 px-4 rounded transition"
+        >
+          Recipe Viewer
+        </Link>
+        <Link 
+          to="/addrecipe" 
+          className="bg-[#4d693a] hover:bg-[#5f7d47] text-white py-2 px-4 rounded transition"
+        >
+          Add
+        </Link>
+      </div>  
         
         <div className="flex items-center space-x-4">
           {currentUser && (

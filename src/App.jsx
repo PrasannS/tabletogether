@@ -14,19 +14,15 @@ import EntryPage from './pages/recipeEntryPage';
 export const AuthContext = createContext();
 
 function App() {
-  const [count, setCount] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    // Check if user is already logged in on app load
     return localStorage.getItem('isLoggedIn') === 'true';
   });
-  
-  // Current user info
+
   const [currentUser, setCurrentUser] = useState(() => {
     const storedUser = localStorage.getItem('currentUser');
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  // Function to handle successful login
   const handleLoginSuccess = (user) => {
     console.log("Login success with user:", user);
     localStorage.setItem('isLoggedIn', 'true');
@@ -35,7 +31,6 @@ function App() {
     setIsAuthenticated(true);
   };
 
-  // Function to handle logout
   const handleLogout = () => {
     console.log("Logging out");
     localStorage.removeItem('isLoggedIn');
@@ -44,17 +39,14 @@ function App() {
     setIsAuthenticated(false);
   };
 
-  // For debugging
-  console.log("Auth state:", { isAuthenticated, currentUser });
-
   return (
     <AuthContext.Provider value={{ isAuthenticated, currentUser, logout: handleLogout }}>
-      {isAuthenticated}
-      
+      {/* ✅ Show NavBar only when logged in */}
+      {isAuthenticated && <NavBar />}
+
       <div className="container mx-auto px-4 py-4">
-        {/* Page Routing */}
         <Routes>
-          {/* Login route */}
+          {/* Login Page */}
           <Route 
             path="/login" 
             element={
@@ -64,7 +56,7 @@ function App() {
             } 
           />
 
-          {/* Protected routes */}
+          {/* Protected Routes */}
           <Route 
             path="/" 
             element={
@@ -105,11 +97,12 @@ function App() {
               <Navigate to="/login" />
             } 
           />
-          
-          
 
-          {/* Redirect any unknown routes to login */}
-          <Route path="*" element={<Navigate to={isAuthenticated ? "/" : "/login"} />} />
+          {/* Fallback Route */}
+          <Route 
+            path="*"
+            element={<Navigate to={isAuthenticated ? "/" : "/login"} />} 
+          />
         </Routes>
       </div>
     </AuthContext.Provider>
