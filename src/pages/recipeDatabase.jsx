@@ -127,7 +127,12 @@ const RecipeSearch = () => {
     if (editMode) {
       return <h1 className="text-3xl font-bold mb-6 text-center"> Select New Recipe</h1>;
     } else {
-      return <h1 className="text-3xl font-bold mb-6 text-center"> Recipe Database</h1>;
+      return (
+        <div className="bg-[#455932] text-white px-6 py-3 rounded-xl shadow-md text-center mb-6">
+          <h1 className="text-3xl font-bold">Recipe Database</h1>
+        </div>
+      );
+      
     }
   }
 
@@ -162,7 +167,7 @@ const RecipeSearch = () => {
       <div className="mb-6">
         <button
           onClick={() => navigate('/addrecipe')}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+          className="text-white px-4 py-2 rounded-md hover:bg-[#6d8d4f] transition-colors bg-[#455932]"
         >
           Add New Recipe
         </button>
@@ -202,7 +207,7 @@ const RecipeSearch = () => {
         )}
         
         {recipes.map(recipe => (
-          <div key={recipe.id} className="flex border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+          <div key={recipe.id} className="flex border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow bg-[#f5f8f2]">
             <div className="w-1/3 max-w-xs bg-gray-200">
               <img 
                 src={recipe.image || '/api/placeholder/200/150'} 
@@ -233,7 +238,7 @@ const RecipeSearch = () => {
               {/* Selection button */}
               <button
                 onClick={() => handleRecipeSelect(recipe)}
-                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+                className="mt-4 bg-[#354426] text-white px-4 py-2 rounded-md hover:bg-[#6d8d4f] transition-colors"
               >
                 {editMode ? 'Select Recipe' : 'View Recipe'}
               </button>

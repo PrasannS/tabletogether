@@ -184,17 +184,17 @@ const RecipeViewerPage = () => {
     <div className="relative p-6">
       {/* Top Right Buttons */}
       <div className="absolute top-6 right-6 flex space-x-4">
-        <Button variant="outline" className="flex items-center" onClick={() => navigate("/recipes")}>
+        <Button variant="outline" className="flex items-center bg-[#455932] text-white" onClick={() => navigate("/recipes")}>
           <BookmarkPlus className="mr-2" /> Recipe Book
         </Button>
-        <Button variant="outline" className="flex items-center" onClick={() => navigate("/menu")}>
+        <Button variant="outline" className="flex items-center  bg-[#455932] text-white" onClick={() => navigate("/menu")}>
           <Calendar className="mr-2" /> Weekly Menu
         </Button>
       </div>
 
       <div className="flex space-x-6 mt-12">
         {/* Right Column - Image and Interactions */}
-        <Card className="w-1/3">
+        <Card className="w-1/3 bg-[#f5f8f2]">
           <CardHeader>
             <CardTitle className="text-center">{currentRecipe.name}</CardTitle>
           </CardHeader>
@@ -204,28 +204,28 @@ const RecipeViewerPage = () => {
               alt={currentRecipe.name} 
               className="w-full h-64 object-cover rounded-lg"
             />
-            <div className="flex space-x-4">
+            <div className="flex space-x-2">
               <Button 
                 variant="outline" 
                 onClick={() => setLikes(likes + 1)}
-                className="flex items-center"
+                className="flex items-center px-3 py-1 text-sm bg-[#455932] text-white rounded-md"
               >
-                <ThumbsUp className="mr-2" /> Like ({likes})
+                <ThumbsUp className="w-4 h-4 mr-1" /> Like ({likes})
               </Button>
               <Button 
                 variant="outline" 
                 onClick={() => setDislikes(dislikes + 1)}
-                className="flex items-center"
+                className="flex items-center px-3 py-1 text-sm bg-[#455932] text-white rounded-md"
               >
-                <ThumbsDown className="mr-2" /> Dislike ({dislikes})
+                <ThumbsDown className="w-4 h-4 mr-1" /> Dislike ({dislikes})
               </Button>
             </div>
-            
+
           </CardContent>
         </Card>
 
         {/* Middle Column - Recipe Details */}
-        <Card className="w-2/3 text-left">
+        <Card className="w-2/3 text-left bg-[#f5f8f2]">
           <CardContent className="p-6">
             <div className="flex flex-col gap-4">
               <div className="flex items-center border-b pb-4">
@@ -350,7 +350,7 @@ const RecipeViewerPage = () => {
               {/* Button that uploads recipe and goes back to home page */}
               <Button 
                 variant="outline" 
-                className="mt-4 w-full" 
+                className="flex items-center px-3 py-1 text-sm bg-[#455932] text-white rounded-md"
                 onClick={() => {
                   uploadRecipe();
                   navigate("/recipes");

@@ -73,9 +73,9 @@ export const Button = ({
   ...props 
 }) => {
   const variantStyles = {
-    default: 'bg-blue-500 text-white hover:bg-blue-600',
+    default: 'bg-blue-300 text-white hover:bg-blue-600',
     outline: 'border border-blue-500 text-blue-500 hover:bg-blue-50',
-    ghost: 'text-blue-500 hover:bg-blue-50',
+    ghost: 'text-gray-500 hover:bg-blue-50',
     link: 'text-blue-500 underline'
   };
 

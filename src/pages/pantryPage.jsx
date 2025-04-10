@@ -13,7 +13,7 @@ const PantryPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Mock data to simulate API response
+  // Mock data
   const mockIngredients = [
     {
       id: 1,
@@ -83,49 +83,40 @@ const PantryPage = () => {
     }
   ];
 
-  // Search and filter ingredients
   useEffect(() => {
     const searchIngredients = () => {
       setLoading(true);
       setError(null);
-      
-      try {
-        // Simulate API request delay
-        setTimeout(() => {
-          let filteredIngredients = [...mockIngredients];
-          
-          // Filter by search query
-          if (query) {
-            filteredIngredients = filteredIngredients.filter(ingredient => 
-              ingredient.name.toLowerCase().includes(query.toLowerCase())
-            );
+
+      setTimeout(() => {
+        let filteredIngredients = [...mockIngredients];
+
+        // Search query filter
+        if (query) {
+          filteredIngredients = filteredIngredients.filter(ingredient =>
+            ingredient.name.toLowerCase().includes(query.toLowerCase())
+          );
+        }
+
+        // Apply filters
+        Object.keys(filters).forEach(filter => {
+          if (filters[filter]) {
+            filteredIngredients = filteredIngredients.filter(ingredient => ingredient[filter]);
           }
-          
-          // Apply category filters
-          Object.keys(filters).forEach(filter => {
-            if (filters[filter]) {
-              filteredIngredients = filteredIngredients.filter(ingredient => ingredient[filter]);
-            }
-          });
-          
-          setIngredients(filteredIngredients);
-          setLoading(false);
-        }, 500);
-      } catch (err) {
-        setError('Failed to fetch pantry items. Please try again.');
+        });
+
+        setIngredients(filteredIngredients);
         setLoading(false);
-      }
+      }, 500);
     };
-    
+
     searchIngredients();
   }, [query, filters]);
 
-  // Handle search input change
   const handleQueryChange = (e) => {
     setQuery(e.target.value);
   };
 
-  // Handle filter toggle
   const handleFilterChange = (filter) => {
     setFilters(prev => ({
       ...prev,
@@ -134,44 +125,56 @@ const PantryPage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Pantry</h1>
-      
-      {/* Search Input */}
+    <div className="max-w-4xl mx-auto p-4 min-h-screen">
+        <div className="bg-[#455932] text-white px-6 py-3 rounded-xl shadow-md text-center mb-6">
+          <h1 className="text-3xl font-bold">Pantry</h1>
+        </div>
+
+      {/* Search Bar */}
       <div className="mb-6">
         <input
           type="text"
           placeholder="Search ingredients..."
           value={query}
           onChange={handleQueryChange}
-          className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 "
         />
       </div>
-      
-      {/* Filter Options */}
-      <div className="flex flex-wrap gap-3 mb-6">
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3 mb-6 items-center">
         <div className="text-lg font-medium mr-2">Category Filters:</div>
-        {Object.keys(filters).map((filter) => (
-          <button
-            key={filter}
-            onClick={() => handleFilterChange(filter)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              filters[filter]
-                ? 'bg-green-500 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            {filter.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-          </button>
-        ))}
+        {Object.keys(filters).map((filter) => {
+          const activeColors = {
+            perishable: 'bg-orange-500 text-white',
+            organic: 'bg-green-600 text-white',
+            refrigerated: 'bg-blue-500 text-white',
+            lowStock: 'bg-red-500 text-white',
+          };
+
+          const isActive = filters[filter];
+          const classes = isActive
+            ? activeColors[filter] || 'bg-gray-500 text-white'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300';
+
+          return (
+            <button
+              key={filter}
+              onClick={() => handleFilterChange(filter)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${classes}`}
+            >
+              {filter.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+            </button>
+          );
+        })}
       </div>
-      
-      {/* Loading State */}
+
+      {/* Loading */}
       {loading && <div className="text-center py-4">Loading pantry items...</div>}
-      
-      {/* Error State */}
+
+      {/* Error */}
       {error && <div className="text-center text-red-500 py-4">{error}</div>}
-      
+
       {/* Results */}
       <div className="space-y-4">
         {!loading && ingredients.length === 0 && (
@@ -179,13 +182,13 @@ const PantryPage = () => {
             No ingredients found. Try adjusting your search or filters.
           </div>
         )}
-        
+
         {ingredients.map(ingredient => (
-          <div key={ingredient.id} className="flex border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+          <div key={ingredient.id} className="flex border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow bg-[#f5f8f2]">
             <div className="w-1/3 max-w-xs bg-gray-200">
-              <img 
-                src={ingredient.image} 
-                alt={ingredient.name} 
+              <img
+                src={ingredient.image}
+                alt={ingredient.name}
                 className="w-full h-full object-cover"
               />
             </div>

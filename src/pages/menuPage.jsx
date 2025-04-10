@@ -171,31 +171,31 @@ const WeeklyMenuPage = () => {
 
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      <div className="flex justify-between items-center p-4 bg-yellow-800 text-white">
+    <div className="flex flex-col h-screen bg-[#f5f8f2]">
+      <div className="flex justify-between items-center p-4 bg-[#6d8d4f] text-white">
         <div className="text-xl font-bold">{formatDate(currentDate)}</div>
-        <div className="flex space-x-4">
-          <button className="px-4 py-2 bg-yellow-700 rounded hover:bg-yellow-600" onClick={() => navigate('/pantry')}>Pantry</button>
-          <button className="px-4 py-2 bg-yellow-700 rounded hover:bg-yellow-600" onClick={() => navigate('/recipes')}>Recipe Database</button>
-          <button className="px-4 py-2 bg-yellow-700 rounded hover:bg-yellow-600" onClick={fetchAndAssignMenu}>Shuffle Menu</button>
+        <div className="flex space-x-4 bg-">
+          <button className="px-4 py-2 bg-[#394929] rounded hover:bg-blue-300" onClick={() => navigate('/pantry')}>Pantry</button>
+          <button className="px-4 py-2 bg-[#394929] rounded hover:bg-blue-300" onClick={() => navigate('/recipes')}>Recipe Database</button>
+          <button className="px-4 py-2 bg-[#394929] rounded hover:bg-blue-300" onClick={fetchAndAssignMenu}>Shuffle Menu</button>
         </div>
       </div>
 
       <div className="flex-grow p-6 overflow-auto">
-        <div className="rounded-lg shadow bg-white overflow-hidden">
+        <div className="rounded-lg shadow bg-[#f1f5ed] overflow-hidden">
           {loading ? (
-            <div className="p-8 text-center text-gray-500">Loading menu...</div>
+            <div className="p-8 text-center text-">Loading menu...</div>
           ) : (
             <table className="min-w-full border-collapse table-fixed">
               <thead>
                 <tr>
-                  <th className="w-1/8 p-3 bg-[#f5e8d5] text-gray-800 border text-left">Meal</th>
+                  <th className="w-1/8 p-3 bg-[#455932] text-gray-100 border text-left">Meal</th>
                   {daysOfWeek.map((date, index) => {
                     const day = date.toLocaleDateString('en-US', { weekday: 'long' });
                     return (
-                      <th key={index} className="w-1/8 p-3 text-center font-semibold border bg-[#f5e8d5] text-gray-800">
+                      <th key={index} className="w-1/8 p-3 text-center font-semibold border bg-[#455932]">
                         <div>{day}</div>
-                        <div className="text-sm text-gray-600">{date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+                        <div className="text-sm text-gray-200">{date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
                       </th>
                     );
                   })}
@@ -204,7 +204,7 @@ const WeeklyMenuPage = () => {
               <tbody>
                 {['lunch', 'dinner'].map((mealType) => (
                   <tr key={mealType} className=" h-64">
-                    <td className="w-24 p-3 font-medium bg-[#f5e8d5] text-gray-600 border capitalize">{mealType}</td>
+                    <td className="w-24 p-3 font-bold medium bg-[#455932] text-gray-200 border capitalize">{mealType}</td>
                     {daysOfWeek.map((date, index) => {
                       const day = date.toLocaleDateString('en-US', { weekday: 'long' });
                       const isCurrentDay = date.toDateString() === currentDate.toDateString();
