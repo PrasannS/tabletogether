@@ -172,12 +172,12 @@ const WeeklyMenuPage = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
-      <div className="flex justify-between items-center p-4 bg-blue-600 text-white">
+      <div className="flex justify-between items-center p-4 bg-yellow-800 text-white">
         <div className="text-xl font-bold">{formatDate(currentDate)}</div>
         <div className="flex space-x-4">
-          <button className="px-4 py-2 bg-blue-700 rounded hover:bg-blue-800" onClick={() => navigate('/pantry')}>Pantry</button>
-          <button className="px-4 py-2 bg-blue-700 rounded hover:bg-blue-800" onClick={() => navigate('/recipes')}>Recipe Database</button>
-          <button className="px-4 py-2 bg-green-600 rounded hover:bg-green-700" onClick={fetchAndAssignMenu}>Shuffle Menu</button>
+          <button className="px-4 py-2 bg-yellow-700 rounded hover:bg-yellow-600" onClick={() => navigate('/pantry')}>Pantry</button>
+          <button className="px-4 py-2 bg-yellow-700 rounded hover:bg-yellow-600" onClick={() => navigate('/recipes')}>Recipe Database</button>
+          <button className="px-4 py-2 bg-yellow-700 rounded hover:bg-yellow-600" onClick={fetchAndAssignMenu}>Shuffle Menu</button>
         </div>
       </div>
 
@@ -203,8 +203,8 @@ const WeeklyMenuPage = () => {
               </thead>
               <tbody>
                 {['lunch', 'dinner'].map((mealType) => (
-                  <tr key={mealType} className="h-64">
-                    <td className="w-24 p-3 font-medium bg-gray-50 text-gray-600 border capitalize">{mealType}</td>
+                  <tr key={mealType} className=" h-64">
+                    <td className="w-24 p-3 font-medium bg-[#f5e8d5] text-gray-600 border capitalize">{mealType}</td>
                     {daysOfWeek.map((date, index) => {
                       const day = date.toLocaleDateString('en-US', { weekday: 'long' });
                       const isCurrentDay = date.toDateString() === currentDate.toDateString();
