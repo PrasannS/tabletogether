@@ -98,6 +98,7 @@ const RecipeViewerPage = () => {
     chefs: ["Marco Rossi", "Elena Garcia"],
     calories: 650,
     allergens: ["Dairy", "Wheat", "Eggs"],
+    mealtype: recipe.mealtype || "lunch"
   });
 
   // const [currentRecipe, setCurrentRecipe] = useState({
@@ -260,6 +261,31 @@ const RecipeViewerPage = () => {
                 </div>
               </div>
               <div>
+
+              {/* mealtype choice buttons that are either "lunch" or "dinner", with appropriate onclick behavior*/}
+              <div className="flex items-center border-b pb-4">
+                <BookOpen className="mr-4 text-gray-600" />
+                <div>
+                  <h3 className="font-semibold">Meal Type</h3>
+                  <p>{currentRecipe.mealtype}</p>
+                  <div className="flex space-x-4 mt-2">
+                    <Button
+                      variant="outline"
+                      className={`flex items-center ${currentRecipe.mealtype === 'lunch' ? 'bg-blue-500 text-white' : ''}`}
+                      onClick={() => setCurrentRecipe({ ...currentRecipe, mealtype: 'lunch' })}
+                    >
+                      Lunch
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className={`flex items-center ${currentRecipe.mealtype === 'dinner' ? 'bg-blue-500 text-white' : ''}`}
+                      onClick={() => setCurrentRecipe({ ...currentRecipe, mealtype: 'dinner' })}
+                    >
+                      Dinner
+                    </Button>
+                  </div>
+                </div>
+              </div>
 
               <div className="mb-6">
                 <h3 className="font-semibold">Instructions</h3>
