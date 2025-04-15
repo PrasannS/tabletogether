@@ -2,13 +2,20 @@ import React, { useState } from 'react';
 import { recipeParser } from '../../recipeParser';
 import { useNavigate } from 'react-router-dom';
 
-
 const EntryPage = () => {
-
-	console.log("Recipe Entry Page Loaded");	
-	const [recipeText, setRecipeText] = useState('');
-	const [parsedRecipe, setParsedRecipe] = useState(null);  
-	const navigate = useNavigate();
+  console.log("Recipe Entry Page Loaded");
+  const [viewMode, setViewMode] = useState('paste'); // 'paste' or 'structured'
+  
+  // Fields for paste view
+  const [recipeText, setRecipeText] = useState('');
+  
+  // Fields for structured view
+  const [title, setTitle] = useState('');
+  const [ingredients, setIngredients] = useState('');
+  const [instructions, setInstructions] = useState('');
+  
+  const [parsedRecipe, setParsedRecipe] = useState(null);
+  const navigate = useNavigate();
 
 	// Handle form submission
 	const handleSubmit = (e) => {
@@ -26,10 +33,8 @@ const EntryPage = () => {
   
 	return (
 	  <div className="container mx-auto p-4 max-w-2xl">
-<div className="bg-[#455932] text-white px-6 py-1 rounded-xl shadow-md text-center mb-6">
-          <h1 className="text-3xl font-light">Recipe Parser</h1>
-        </div>		 
-		 <form onSubmit={handleSubmit}>
+		<h1 className="text-2xl font-bold mb-4">Recipe Parser</h1>
+		  <form onSubmit={handleSubmit}>
 			<div className="mb-4">
 			  <textarea
 				className="w-full p-4 border border-gray-300 rounded-md min-h-64"
@@ -40,8 +45,7 @@ const EntryPage = () => {
 			</div>
 			<button
 			  type="submit"
-			  className="bg-[#455932] text-white py-2 px-4 rounded-md hover:bg-blue-600"
-			  
+			  className="bg-blue-500 text-black py-2 px-4 rounded-md hover:bg-blue-600"
 			>
 			  Save
 			</button>
