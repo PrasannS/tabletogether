@@ -8,7 +8,8 @@ import {
   AlertTriangle, 
   BookOpen,
   BookmarkPlus,
-  Calendar 
+  Calendar,
+  ArrowLeft
 } from 'lucide-react';
 
 // import RecipePriceCalculator from '../../RecipePriceCalculator';
@@ -183,6 +184,15 @@ const RecipeViewerPage = () => {
 
   return (
     <div className="relative p-6">
+      {/* Back Button */}
+      <Button 
+        variant="outline" 
+        className="absolute top-6 left-6 flex items-center bg-white text-[#455932] border border-[#455932]"
+        onClick={() => navigate(-1)}
+      >
+        <ArrowLeft className="mr-2" /> Back
+      </Button>
+
       {/* Top Right Buttons */}
       <div className="absolute top-6 right-6 flex space-x-4">
         <Button variant="outline" className="flex items-center bg-[#455932] text-white" onClick={() => navigate("/recipes")}>
