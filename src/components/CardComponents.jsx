@@ -73,11 +73,13 @@ export const Button = ({
   ...props 
 }) => {
   const variantStyles = {
-    default: 'bg-blue-300 text-white hover:bg-blue-600',
-    outline: 'border border-blue-500 text-blue-500 hover:bg-blue-50',
-    ghost: 'text-gray-500 hover:bg-blue-50',
-    link: 'text-blue-500 underline'
+    default: 'bg-[#455932] text-white hover:text-[#455932] hover:bg-white',
+    outline: 'border border-[#455932] text-white hover:bg-white',
+    ghost: 'text-gray-500 hover:bg-[#455932]',
+    link: 'text-[#455932] underline'
   };
+
+  // className="px-3 py-1 bg-[#455932] text-white rounded hover:text-[#455932] hover:bg-white"
 
   return (
     <button

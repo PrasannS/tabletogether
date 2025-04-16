@@ -227,15 +227,6 @@ const RecipeViewerPage = () => {
 
   return (
     <div className="relative p-6">
-      {/* Top Right Buttons */}
-       <button
-              onClick={() => navigate(-1)}
-              className="flex items-center text-gray-700 hover:text-[#455932] mb-4"
-            >
-              <ArrowLeft className="w-5 h-5 mr-1" />
-              Back
-            </button>
-        
       <div className="absolute top-6 right-6 flex space-x-4">
         <Button variant="outline" className="flex items-center" onClick={() => navigate("/recipes")}>
           <BookmarkPlus className="mr-2" /> Recipe Book
@@ -260,13 +251,13 @@ const RecipeViewerPage = () => {
             <div className="flex space-x-4">
               <Button 
                 variant="outline" 
-                className="flex items-center"
+                className="flex items-center bg-[#455932] text-white"
               >
                 <ThumbsUp className="mr-2" /> Like ({likes})
               </Button>
               <Button 
                 variant="outline" 
-                className="flex items-center"
+                className="flex items-center bg-[#455932] text-white"
               >
                 <ThumbsDown className="mr-2" /> Dislike ({dislikes})
               </Button>
@@ -354,7 +345,7 @@ const RecipeViewerPage = () => {
                     />
                     <div className="mt-2 flex gap-2">
                       <button 
-                        className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        className="px-3 py-1 bg-[#455932] text-white rounded hover:text-[#455932] hover:bg-white"
                         onClick={handleSaveEdit}
                       >
                         Save
@@ -397,7 +388,7 @@ const RecipeViewerPage = () => {
                   />
                   <div className="mt-2 flex gap-2">
                     <button 
-                      className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                      className="px-3 py-1 bg-[#455932] text-white rounded hover:text-[#455932] hover:bg-white"
                       onClick={handleSaveEdit}
                     >
                       Save
@@ -429,7 +420,7 @@ const RecipeViewerPage = () => {
               {/* Button that uploads recipe and goes back to home page */}
               <Button 
                 variant="outline" 
-                className="mt-4 w-full" 
+                className="mt-4 w-full bg-[#455932] text-white" 
                 onClick={() => {
                   uploadRecipe();
                   navigate("/recipes");
