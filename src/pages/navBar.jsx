@@ -6,7 +6,7 @@ const NavBar = () => {
   const { currentUser, logout } = useContext(AuthContext);
 
   return (
-    <nav className="bg-[#6d8d4f] text-white p-4">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-[#6d8d4f] text-white p-4 shadow-md">
     <div className="container mx-auto flex justify-between items-center text-center">
       <div className="flex space-x-2">
         <Link 

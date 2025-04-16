@@ -41,10 +41,9 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, currentUser, logout: handleLogout }}>
-      {/* ✅ Show NavBar only when logged in */}
       {isAuthenticated && <NavBar />}
 
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-4 pt-20">
         <Routes>
           {/* Login Page */}
           <Route 
