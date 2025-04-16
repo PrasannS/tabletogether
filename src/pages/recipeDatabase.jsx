@@ -132,7 +132,7 @@ const RecipeSearch = () => {
     } else {
       return (
         <div className="bg-[#455932] text-white px-6 py-3 rounded-xl shadow-md text-center mb-6">
-          <h1 className="text-3xl font-bold">Recipe Database</h1>
+          <h1 className="text-3xl font-bold">Recipe Book</h1>
         </div>
       );
       

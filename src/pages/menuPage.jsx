@@ -320,13 +320,13 @@ const WeeklyMenuPage = () => {
                                 <>
                                   <button
                                     onClick={() => navigate('/viewer', { state: { recipe: meal } })}
-                                    className="px-3 py-1 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-full text-sm transition mb-2"
+                                    className="px-3 py-1 bg-[#dde6d5] rounded-full text-sm transition mb-2"
                                   >
                                     View More
                                   </button>
                                   <button
                                     onClick={() => editRecipe(day, mealType)}
-                                    className="px-3 py-1 text-yellow-600 bg-yellow-50 hover:bg-yellow-100 rounded-full text-sm transition"
+                                    className="px-3 py-1 bg-[#dde6d5] rounded-full text-sm transition"
                                   >
                                     Edit
                                   </button>

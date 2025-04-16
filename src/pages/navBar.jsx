@@ -11,12 +11,6 @@ const NavBar = () => {
       <div className="flex space-x-2">
         <Link 
           to="/" 
-          className="bg-[#4d693a] hover:bg-[#5f7d47] text-white font-bold py-2 px-4 rounded transition"
-        >
-          Recipe Planner
-        </Link>
-        <Link 
-          to="/" 
           className="bg-[#4d693a] hover:bg-[#5f7d47] text-white py-2 px-4 rounded transition"
         >
           Menu
@@ -55,7 +49,7 @@ const NavBar = () => {
           )}
           <button
             onClick={logout}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors"
+            className="bg-[#394929] text-white px-4 py-2 rounded-md transition-colors"
           >
             Logout
           </button>
