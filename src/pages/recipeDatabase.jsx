@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, onSnapshot, where } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { useNavigate , useLocation} from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+
 import { 
   getFirestore, 
   addDoc, 
@@ -10,6 +12,7 @@ import {
   updateDoc,
   deleteDoc
 } from 'firebase/firestore';
+
 
 const RecipeSearch = () => {
 
@@ -149,8 +152,16 @@ const RecipeSearch = () => {
   }
   return (
     <div className="max-w-4xl mx-auto p-4">
-
-      {titleHandle()}
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="flex items-center text-gray-700 hover:text-[#455932] mb-4"
+      >
+        <ArrowLeft className="w-5 h-5 mr-1" />
+        Back
+      </button>
+  
+      {titleHandle()}  
       
       {/* Search Input */}
       <div className="mb-6">
