@@ -130,13 +130,6 @@ const PantryPage = () => {
         <div className="bg-[#455932] text-white px-6 py-3 rounded-xl shadow-md text-center mb-6">
           <h1 className="text-3xl font-bold">Pantry</h1>
         </div>
-        <button
-			onClick={() => navigate(-1)}
-			className="flex items-center text-gray-700 hover:text-[#455932] mb-4"
-		>
-			<ArrowLeft className="w-5 h-5 mr-1" />
-			Back
-		</button>
 
       {/* Search Bar */}
       <div className="mb-6">
