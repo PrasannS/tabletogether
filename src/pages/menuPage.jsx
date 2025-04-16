@@ -174,8 +174,42 @@ const WeeklyMenuPage = () => {
     fetchAndAssignMenu();
   }, []);
 
+  const updateinc = (day, mealType, set) => {
+    var mname = menuData[day]?.[mealType]['name'];
+    // in firebase find meal with this name, and update its likes
+    const mealRef = collection(db, "recipes");
+    const q = query(mealRef, where("name", "==", mname));
+    getDocs(q).then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const recipeRef = doc.ref;
+        if (set === "likes"){
+          setDoc(recipeRef, { likes: (doc.data().likes || 0) + 1 }, { merge: true })
+          .then(() => {
+            console.log("Likes updated successfully");
+          })
+          .catch((error) => {
+            console.error("Error updating likes:", error);
+          });
+        } else if (set === "dislikes"){
+          setDoc(recipeRef, { dislikes: (doc.data().dislikes || 0) + 1 }, { merge: true })
+          .then(() => {
+            console.log("Dislikes updated successfully");
+          })
+          .catch((error) => {
+            console.error("Error updating dislikes:", error);
+          });
+        }
+        
+      });
+    }).catch((error) => {
+      console.error("Error fetching recipe:", error);
+    }
+    );
+  }
+
   const handleLike = (day, mealType) => {
     const mealId = `${day}-${mealType}`;
+    updateinc(day, mealType, "likes");
     setLikedMeals(prev => {
       if (prev[mealId]) {
         const newLiked = {...prev};
@@ -195,6 +229,7 @@ const WeeklyMenuPage = () => {
   };
 
   const handleDislike = (day, mealType) => {
+    updateinc(day, mealType, "dislikes");
     const mealId = `${day}-${mealType}`;
     setDislikedMeals(prev => {
       if (prev[mealId]) {

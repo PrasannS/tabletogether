@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   ThumbsUp, 
@@ -100,10 +100,31 @@ const RecipeViewerPage = () => {
   };
 
 
-
   // get recipe from the recipeEntryPage
   const location = useLocation();
   const recipe = location.state?.recipe;
+
+
+  const [likes, setLikes] = useState(0);
+  const [dislikes, setDislikes] = useState(0);
+
+
+  const getlikesdislikes = async () => {
+    const recipesRef = collection(db, 'recipes');
+    const q = query(recipesRef, where("name", "==", currentRecipe.name));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const recipeDoc = querySnapshot.docs[0];
+      const recipeData = recipeDoc.data();
+      setLikes(recipeData.likes);
+      setDislikes(recipeData.dislikes);
+    }
+  };
+
+  useEffect(() => {
+    getlikesdislikes();
+  }, []);
+
 
   if (!recipe) {
     console.error("No recipe data was passed to the viewer");
@@ -122,7 +143,7 @@ const RecipeViewerPage = () => {
     chefs: recipe.chefs || "Marco Rossi, Elena Garcia",
     calories: 650,
     allergens: recipe.allergens || "Dairy, Wheat, Eggs",
-    mealtype: recipe.mealType || "lunch"
+    mealtype: recipe.mealType || "lunch", 
   });
 
   // const [currentRecipe, setCurrentRecipe] = useState({
@@ -146,9 +167,6 @@ const RecipeViewerPage = () => {
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-
-  const [likes, setLikes] = useState(0);
-  const [dislikes, setDislikes] = useState(0);
 
   // upload recipe to firebase
   const uploadRecipe = async () => {
@@ -242,14 +260,12 @@ const RecipeViewerPage = () => {
             <div className="flex space-x-4">
               <Button 
                 variant="outline" 
-                onClick={() => setLikes(likes + 1)}
                 className="flex items-center"
               >
                 <ThumbsUp className="mr-2" /> Like ({likes})
               </Button>
               <Button 
                 variant="outline" 
-                onClick={() => setDislikes(dislikes + 1)}
                 className="flex items-center"
               >
                 <ThumbsDown className="mr-2" /> Dislike ({dislikes})
