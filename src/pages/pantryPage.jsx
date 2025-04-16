@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-
-
 const PantryPage = () => {
+  const navigate = useNavigate(); 
   const [query, setQuery] = useState('');
   const [filters, setFilters] = useState({
     perishable: false,
