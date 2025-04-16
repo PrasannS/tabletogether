@@ -236,7 +236,7 @@ const WeeklyMenuPage = () => {
       </div>
 
       <div className="flex-grow p-6 overflow-auto">
-        <div className="rounded-lg shadow bg-[#f1f5ed] overflow-hidden">
+        <div className="rounded-lg shadow bg-[#fffefc] overflow-hidden">
           {loading ? (
             <div className="p-8 text-center">Loading menu...</div>
           ) : error ? (
