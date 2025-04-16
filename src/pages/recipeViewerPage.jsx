@@ -8,8 +8,7 @@ import {
   AlertTriangle, 
   BookOpen,
   BookmarkPlus,
-  Calendar,
-  ArrowLeft
+  Calendar 
 } from 'lucide-react';
 
 // import RecipePriceCalculator from '../../RecipePriceCalculator';
@@ -67,6 +66,27 @@ const RecipeViewerPage = () => {
         ingredients: updatedIngredients
       });
     }
+    else if (editingMode === 'title') {
+      const updatedTitle = batchEditText
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item !== '');
+        
+      setCurrentRecipe({
+        ...currentRecipe,
+        name: updatedTitle
+      });
+    } 
+    else if (editingMode === 'chefs') {
+      const updatedChefs = batchEditText
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item !== '');
+      setCurrentRecipe({
+        ...currentRecipe,
+        chefs: updatedChefs
+      });
+    }
     
     // Exit editing mode
     setEditingMode(null);
@@ -77,6 +97,8 @@ const RecipeViewerPage = () => {
       setEditingMode(null);
     }
   };
+
+
 
   // get recipe from the recipeEntryPage
   const location = useLocation();
@@ -96,10 +118,10 @@ const RecipeViewerPage = () => {
     instructions: recipe.instructions,
     additionalSections: recipe.additionalSections,
     image: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS_efsfYCzQtTNE7syTtekzAZuKIItXB7Vh0S8ZsAa_LQIQlSx7lT3sxKhXvB6iXctYZr_OhChfTNyL20fVHTIwtIpPD3EDhO4yOxohcMNh",
-    chefs: ["Marco Rossi", "Elena Garcia"],
+    chefs: recipe.chefs || "Marco Rossi, Elena Garcia",
     calories: 650,
-    allergens: ["Dairy", "Wheat", "Eggs"],
-    mealtype: recipe.mealtype || "lunch"
+    allergens: recipe.allergens || "Dairy, Wheat, Eggs",
+    mealtype: recipe.mealType || "lunch"
   });
 
   // const [currentRecipe, setCurrentRecipe] = useState({
@@ -154,7 +176,8 @@ const RecipeViewerPage = () => {
           chefs: currentRecipe.chefs,
           calories: currentRecipe.calories,
           allergens: currentRecipe.allergens,
-          updatedAt: new Date()
+          updatedAt: new Date(), 
+          mealType: currentRecipe.mealtype
         });
         
         console.log("Recipe updated successfully");
@@ -172,7 +195,8 @@ const RecipeViewerPage = () => {
           allergens: currentRecipe.allergens,
           likes: 0,
           dislikes: 0,
-          createdAt: new Date()
+          createdAt: new Date(), 
+          mealType: currentRecipe.mealtype
         });
         
         console.log("Recipe created successfully");
@@ -184,28 +208,19 @@ const RecipeViewerPage = () => {
 
   return (
     <div className="relative p-6">
-      {/* Back Button */}
-      <Button 
-        variant="outline" 
-        className="absolute top-6 left-6 flex items-center bg-white text-[#455932] border border-[#455932]"
-        onClick={() => navigate(-1)}
-      >
-        <ArrowLeft className="mr-2" /> Back
-      </Button>
-
       {/* Top Right Buttons */}
       <div className="absolute top-6 right-6 flex space-x-4">
-        <Button variant="outline" className="flex items-center bg-[#455932] text-white" onClick={() => navigate("/recipes")}>
+        <Button variant="outline" className="flex items-center" onClick={() => navigate("/recipes")}>
           <BookmarkPlus className="mr-2" /> Recipe Book
         </Button>
-        <Button variant="outline" className="flex items-center  bg-[#455932] text-white" onClick={() => navigate("/menu")}>
+        <Button variant="outline" className="flex items-center" onClick={() => navigate("/menu")}>
           <Calendar className="mr-2" /> Weekly Menu
         </Button>
       </div>
 
       <div className="flex space-x-6 mt-12">
         {/* Right Column - Image and Interactions */}
-        <Card className="w-1/3 bg-[#f5f8f2]">
+        <Card className="w-1/3">
           <CardHeader>
             <CardTitle className="text-center">{currentRecipe.name}</CardTitle>
           </CardHeader>
@@ -215,28 +230,28 @@ const RecipeViewerPage = () => {
               alt={currentRecipe.name} 
               className="w-full h-64 object-cover rounded-lg"
             />
-            <div className="flex space-x-2">
+            <div className="flex space-x-4">
               <Button 
                 variant="outline" 
                 onClick={() => setLikes(likes + 1)}
-                className="flex items-center px-3 py-1 text-sm bg-[#455932] text-white rounded-md"
+                className="flex items-center"
               >
-                <ThumbsUp className="w-4 h-4 mr-1" /> Like ({likes})
+                <ThumbsUp className="mr-2" /> Like ({likes})
               </Button>
               <Button 
                 variant="outline" 
                 onClick={() => setDislikes(dislikes + 1)}
-                className="flex items-center px-3 py-1 text-sm bg-[#455932] text-white rounded-md"
+                className="flex items-center"
               >
-                <ThumbsDown className="w-4 h-4 mr-1" /> Dislike ({dislikes})
+                <ThumbsDown className="mr-2" /> Dislike ({dislikes})
               </Button>
             </div>
-
+            
           </CardContent>
         </Card>
 
         {/* Middle Column - Recipe Details */}
-        <Card className="w-2/3 text-left bg-[#f5f8f2]">
+        <Card className="w-2/3 text-left">
           <CardContent className="p-6">
             <div className="flex flex-col gap-4">
               <div className="flex items-center border-b pb-4">
@@ -289,7 +304,10 @@ const RecipeViewerPage = () => {
                     <Button
                       variant="outline"
                       className={`flex items-center ${currentRecipe.mealtype === 'dinner' ? 'bg-blue-500 text-white' : ''}`}
-                      onClick={() => setCurrentRecipe({ ...currentRecipe, mealtype: 'dinner' })}
+                      onClick={() => {
+                        setCurrentRecipe({ ...currentRecipe, mealtype: 'dinner' });
+                        console.log(currentRecipe);
+                      }}
                     >
                       Dinner
                     </Button>
@@ -386,7 +404,7 @@ const RecipeViewerPage = () => {
               {/* Button that uploads recipe and goes back to home page */}
               <Button 
                 variant="outline" 
-                className="flex items-center px-3 py-1 text-sm bg-[#455932] text-white rounded-md"
+                className="mt-4 w-full" 
                 onClick={() => {
                   uploadRecipe();
                   navigate("/recipes");
