@@ -229,10 +229,8 @@ const WeeklyMenuPage = () => {
   return (
     <div className="flex flex-col h-screen bg-[#f5f8f2]">
       <div className="flex justify-between items-center p-4 bg-[#6d8d4f] text-white">
-        <div className="text-xl font-bold">{formatDate(currentDate)}</div>
+        <div className="text-xl">{formatDate(currentDate)}</div>
         <div className="flex space-x-4">
-          <button className="px-4 py-2 bg-[#394929] rounded hover:bg-blue-300" onClick={() => navigate('/pantry')}>Pantry</button>
-          <button className="px-4 py-2 bg-[#394929] rounded hover:bg-blue-300" onClick={() => navigate('/recipes')}>Recipe Database</button>
           <button className="px-4 py-2 bg-[#394929] rounded hover:bg-blue-300" onClick={fetchAndAssignMenu}>Shuffle Menu</button>
         </div>
       </div>
@@ -243,7 +241,7 @@ const WeeklyMenuPage = () => {
             <div className="p-8 text-center">Loading menu...</div>
           ) : error ? (
             <div className="p-8 text-center text-red-600">
-              <div className="font-bold mb-2">Error loading menu</div>
+              <div className="mb-2">Error loading menu</div>
               <div>{error}</div>
               <button 
                 onClick={fetchAndAssignMenu} 
@@ -260,7 +258,7 @@ const WeeklyMenuPage = () => {
                   {daysOfWeek.map((date, index) => {
                     const day = date.toLocaleDateString('en-US', { weekday: 'long' });
                     return (
-                      <th key={index} className="w-1/8 p-3 text-center font-semibold border bg-[#455932]">
+                      <th key={index} className="w-1/8 p-3 text-center border bg-[#455932]">
                         <div className="text-gray-100">{day}</div>
                         <div className="text-sm text-gray-200">{date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
                       </th>
@@ -271,7 +269,7 @@ const WeeklyMenuPage = () => {
               <tbody>
                 {['lunch', 'dinner'].map((mealType) => (
                   <tr key={mealType} className="h-64">
-                    <td className="w-24 p-3 font-bold medium bg-[#455932] text-gray-200 border capitalize">{mealType}</td>
+                    <td className="w-24 p-3 bg-[#455932] text-gray-200 border capitalize">{mealType}</td>
                     {daysOfWeek.map((date, index) => {
                       const day = date.toLocaleDateString('en-US', { weekday: 'long' });
                       const isCurrentDay = date.toDateString() === currentDate.toDateString();
@@ -296,28 +294,28 @@ const WeeklyMenuPage = () => {
                                   <div className="w-28 h-28 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">No Image</div>
                                 )}
                               </div>
-                              <span className="font-medium text-center text-black block">{getRecipeName(meal)}</span>
-                              <div className="flex justify-center space-x-2 mt-2">
-                                <button
-                                  onClick={() => handleLike(day, mealType)}
-                                  className={`p-1 rounded border transition 
-                                    ${isLiked ? 'bg-green-100 border-green-400 text-green-700' : 'bg-white border-gray-300 text-gray-500 hover:bg-green-50'}`}
-                                >
-                                  👍
-                                </button>
-                                <button
-                                  onClick={() => handleDislike(day, mealType)}
-                                  className={`p-1 rounded border transition 
-                                    ${isDisliked ? 'bg-red-100 border-red-400 text-red-700' : 'bg-white border-gray-300 text-gray-500 hover:bg-red-50'}`}
-                                >
-                                  👎
-                                </button>
-                              </div>
+                              <span className="font-normal text-center text-black block">{getRecipeName(meal)}</span>
                             </div>
-
+							
                             <div className="flex-grow" />
 
                             <div className="flex flex-col items-center mt-4">
+							<div className="flex justify-center space-x-2 mb-2">
+								<button
+									onClick={() => handleLike(day, mealType)}
+									className={`p-1 rounded border transition 
+									${isLiked ? 'bg-green-100 border-green-400 text-green-700' : 'bg-white border-gray-300 text-gray-500 hover:bg-green-50'}`}
+								>
+									👍
+								</button>
+								<button
+									onClick={() => handleDislike(day, mealType)}
+									className={`p-1 rounded border transition 
+									${isDisliked ? 'bg-red-100 border-red-400 text-red-700' : 'bg-white border-gray-300 text-gray-500 hover:bg-red-50'}`}
+								>
+									👎
+								</button>
+							</div>
                               {meal && (
                                 <>
                                   <button
