@@ -231,14 +231,14 @@ const RecipeViewerPage = () => {
     <div className="relative p-6">
       <div className="absolute top-6 right-6 flex space-x-4">
         <Button
-          variant="outline"
+          
           className="flex items-center"
           onClick={() => navigate("/recipes")}
         >
           <BookmarkPlus className="mr-2" /> Recipe Book
         </Button>
         <Button
-          variant="outline"
+          
           className="flex items-center"
           onClick={() => navigate("/menu")}
         >
@@ -260,14 +260,12 @@ const RecipeViewerPage = () => {
             />
             <div className="flex space-x-4">
               <Button
-                variant="outline"
-                className="flex items-center bg-[#455932] text-white"
+                className="flex items-center bg-[#455932] hover:bg-[#5f7d47] text-white"
               >
                 <ThumbsUp className="mr-2" /> Like ({likes})
               </Button>
               <Button
-                variant="outline"
-                className="flex items-center bg-[#455932] text-white"
+              className="flex items-center bg-[#455932] hover:bg-[#5f7d47] text-white"
               >
                 <ThumbsDown className="mr-2" /> Dislike ({dislikes})
               </Button>
@@ -304,6 +302,7 @@ const RecipeViewerPage = () => {
                 <div>
                   <h3 className="font-semibold">Price</h3>
                   {/* <p><RecipePriceCalculator currentRecipe={currentRecipe} /> cal</p> */}
+                  <p> $500 </p>
                 </div>
               </div>
 
@@ -327,32 +326,32 @@ const RecipeViewerPage = () => {
                     <p>{currentRecipe.mealtype}</p>
                     <div className="flex space-x-4 mt-2">
                       <Button
-                        variant="outline"
+                        
                         className={`flex items-center ${
                           currentRecipe.mealtype === "lunch"
-                            ? "bg-blue-500 text-white"
+                            ? "bg-white-500 text-white"
                             : ""
                         }`}
                         onClick={() =>
                           setCurrentRecipe({
                             ...currentRecipe,
-                            mealtype: "lunch",
+                            mealtype: "Lunch",
                           })
                         }
                       >
                         Lunch
                       </Button>
                       <Button
-                        variant="outline"
+                        
                         className={`flex items-center ${
                           currentRecipe.mealtype === "dinner"
-                            ? "bg-blue-500 text-white"
+                            ? "bg-white-500 text-white"
                             : ""
                         }`}
                         onClick={() => {
                           setCurrentRecipe({
                             ...currentRecipe,
-                            mealtype: "dinner",
+                            mealtype: "Dinner",
                           });
                           console.log(currentRecipe);
                         }}
@@ -380,8 +379,10 @@ const RecipeViewerPage = () => {
                       />
                       <div className="mt-2 flex gap-2">
                         <button
-                          className="px-3 py-1 bg-[#455932] text-white rounded hover:text-[#455932] hover:bg-white"
+                          variant="outline"
+                          className="px-3 py-1 bg-[#455932] hover:bg-[#5f7d47] text-white rounded hover:text-[#455932]"
                           onClick={handleSaveEdit}
+                          // "bg-[#4d693a] hover:bg-[#5f7d47] text-white py-2 px-4 rounded transition"
                         >
                           Save
                         </button>
@@ -425,7 +426,7 @@ const RecipeViewerPage = () => {
                       />
                       <div className="mt-2 flex gap-2">
                         <button
-                          className="px-3 py-1 bg-[#455932] text-white rounded hover:text-[#455932] hover:bg-white"
+                          className="px-3 py-1 bg-[#455932] text-white rounded hover:text-[#455932] hover:bg-[#5f7d47]"
                           onClick={handleSaveEdit}
                         >
                           Save
@@ -456,7 +457,7 @@ const RecipeViewerPage = () => {
 
                 {/* Button that uploads recipe and goes back to home page */}
                 <Button
-                  variant="outline"
+                  
                   className="mt-4 w-full bg-[#455932] text-white"
                   onClick={() => {
                     uploadRecipe();
