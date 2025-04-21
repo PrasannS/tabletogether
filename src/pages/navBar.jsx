@@ -28,12 +28,6 @@ const NavBar = () => {
           Recipes
         </Link>
         <Link 
-          to="/viewer" 
-          className="bg-[#4d693a] hover:bg-[#5f7d47] text-white py-2 px-4 rounded transition"
-        >
-          Recipe Viewer
-        </Link>
-        <Link 
           to="/addrecipe" 
           className="bg-[#4d693a] hover:bg-[#5f7d47] text-white py-2 px-4 rounded transition"
         >

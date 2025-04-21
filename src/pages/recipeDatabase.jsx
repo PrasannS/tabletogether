@@ -84,7 +84,7 @@ const RecipeSearch = () => {
           // Apply text search filter client-side (Firestore doesn't support full-text search)
           if (searchQuery) {
             fetchedRecipes = fetchedRecipes.filter(recipe => 
-              recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
+              recipe.name.toLowerCase().includes(searchQuery.toLowerCase())
             );
           }
           
