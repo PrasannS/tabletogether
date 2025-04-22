@@ -143,7 +143,7 @@ const RecipeViewerPage = () => {
     instructions: recipe.instructions,
     additionalSections: recipe.additionalSections,
     image:
-      "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS_efsfYCzQtTNE7syTtekzAZuKIItXB7Vh0S8ZsAa_LQIQlSx7lT3sxKhXvB6iXctYZr_OhChfTNyL20fVHTIwtIpPD3EDhO4yOxohcMNh",
+      recipe.imageUrl || "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS_efsfYCzQtTNE7syTtekzAZuKIItXB7Vh0S8ZsAa_LQIQlSx7lT3sxKhXvB6iXctYZr_OhChfTNyL20fVHTIwtIpPD3EDhO4yOxohcMNh",
     chefs: recipe.chefs || "Marco Rossi, Elena Garcia",
     calories: 650,
     allergens: recipe.allergens || "Dairy, Wheat, Eggs",
