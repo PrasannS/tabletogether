@@ -52,7 +52,7 @@ const WeeklyMenuPage = () => {
     return startOfWeek.toISOString().slice(0, 10); // YYYY-MM-DD
   };
 
-  const fetchAndAssignMenu = async () => {
+  const fetchAndAssignMenu = async (forceNewMenu = false) => {
     setLoading(true);
     setError(null);
     
@@ -61,48 +61,58 @@ const WeeklyMenuPage = () => {
       const currentWeek = getWeekStartDate();
       console.log("Current week identifier:", currentWeek);
 
-      // Check if a menu exists for this week
-      const menusRef = collection(db, "menus");
-      const querySnapshot = await getDocs(menusRef);
-      console.log("Retrieved menus count:", querySnapshot.docs.length);
-      
-      // Log all available menu documents for debugging
-      querySnapshot.docs.forEach(doc => {
-        console.log("Available menu:", doc.id);
-      });
-      
-      const menuDoc = querySnapshot.docs.find(doc => doc.id === currentWeek);
-      
-      if (menuDoc) {
-        console.log("Menu found for this week:", menuDoc.data());
-        const menu = menuDoc.data();
+      // Only check for existing menu if we're not forcing a new one
+      let existingMenu = null;
+      if (!forceNewMenu) {
+        // Check if a menu exists for this week
+        const menusRef = collection(db, "menus");
+        const querySnapshot = await getDocs(menusRef);
+        console.log("Retrieved menus count:", querySnapshot.docs.length);
         
-        // Handle edited recipe if present
-        if (edrecipe) {
-          const day = edrecipe[0];
-          const mealType = edrecipe[1];
-          const recipe = edrecipe[2];
-          
-          console.log("Updating menu with edited recipe:", { day, mealType, recipe });
-          
-          // Create a deep copy of the menu to avoid reference issues
-          const updatedMenu = JSON.parse(JSON.stringify(menu));
-          updatedMenu[day][mealType] = recipe;
-          
-          try {
-            await setDoc(doc(db, "menus", currentWeek), updatedMenu);
-            console.log("Menu updated in Firestore successfully");
-            setMenuData(updatedMenu);
-          } catch (updateError) {
-            console.error("Error updating menu:", updateError);
-            setError("Failed to update menu with edited recipe");
-            setMenuData(menu); // Use original menu
-          }
-        } else {
-          setMenuData(menu);
+        // Log all available menu documents for debugging
+        querySnapshot.docs.forEach(doc => {
+          console.log("Available menu:", doc.id);
+        });
+        
+        const menuDoc = querySnapshot.docs.find(doc => doc.id === currentWeek);
+        
+        if (menuDoc) {
+          console.log("Menu found for this week:", menuDoc.data());
+          existingMenu = menuDoc.data();
         }
+      }
+      
+      // Handle edited recipe if present or use existing menu if available and not forcing new
+      if (edrecipe) {
+        const day = edrecipe[0];
+        const mealType = edrecipe[1];
+        const recipe = edrecipe[2];
+        
+        console.log("Updating menu with edited recipe:", { day, mealType, recipe });
+        
+        // Create a deep copy of the menu to avoid reference issues
+        const baseMenu = existingMenu || {};
+        const updatedMenu = JSON.parse(JSON.stringify(baseMenu));
+        
+        // Ensure the day exists in the menu
+        if (!updatedMenu[day]) updatedMenu[day] = {};
+        
+        updatedMenu[day][mealType] = recipe;
+        
+        try {
+          await setDoc(doc(db, "menus", currentWeek), updatedMenu);
+          console.log("Menu updated in Firestore successfully");
+          setMenuData(updatedMenu);
+        } catch (updateError) {
+          console.error("Error updating menu:", updateError);
+          setError("Failed to update menu with edited recipe");
+          setMenuData(existingMenu || {}); // Use original menu if available
+        }
+      } else if (existingMenu && !forceNewMenu) {
+        // Use existing menu if not forcing a new one
+        setMenuData(existingMenu);
       } else {
-        console.log("No menu found for this week. Generating new menu...");
+        console.log("Generating new menu...");
         
         // Fetch all recipes
         const recipesSnapshot = await getDocs(collection(db, "recipes"));
@@ -171,7 +181,8 @@ const WeeklyMenuPage = () => {
   };
 
   useEffect(() => {
-    fetchAndAssignMenu();
+    // Initial load - use existing menu if available
+    fetchAndAssignMenu(false);
   }, []);
 
   const updateinc = (day, mealType, set) => {
@@ -266,7 +277,7 @@ const WeeklyMenuPage = () => {
       <div className="flex justify-between items-center p-4 bg-[#6d8d4f] text-white">
         <div className="text-xl">{formatDate(currentDate)}</div>
         <div className="flex space-x-4">
-          <button className="px-4 py-2 bg-[#394929] rounded hover:bg-blue-300" onClick={fetchAndAssignMenu}>Shuffle Menu</button>
+          <button className="px-4 py-2 bg-[#394929] rounded hover:bg-blue-300" onClick={() => fetchAndAssignMenu(true)}>Shuffle Menu</button>
         </div>
       </div>
 
@@ -279,7 +290,7 @@ const WeeklyMenuPage = () => {
               <div className="mb-2">Error loading menu</div>
               <div>{error}</div>
               <button 
-                onClick={fetchAndAssignMenu} 
+                onClick={() => fetchAndAssignMenu(false)} 
                 className="mt-4 px-4 py-2 bg-[#6d8d4f] text-white rounded hover:bg-[#5c7a41]"
               >
                 Try Again
