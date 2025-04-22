@@ -213,7 +213,7 @@ const RecipeSearch = () => {
           <div key={recipe.id} className="flex border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow bg-[#f5f8f2]">
             <div className="w-1/3 max-w-xs bg-gray-200">
               <img 
-                src={recipe.image || '/api/placeholder/200/150'} 
+                src={recipe.imageUrl || '/api/placeholder/200/150'} 
                 alt={recipe.name} 
                 className="w-full h-full object-cover"
               />
