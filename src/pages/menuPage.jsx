@@ -272,6 +272,7 @@ const WeeklyMenuPage = () => {
     return meal.title || meal.name || "Unnamed Recipe";
   };
 
+
   return (
     <div className="flex flex-col h-screen bg-[#f5f8f2]">
       <div className="flex justify-between items-center p-4 bg-[#6d8d4f] text-white">
@@ -334,10 +335,10 @@ const WeeklyMenuPage = () => {
                           <div className="flex flex-col justify-between h-full">
                             <div>
                               <div className="w-32 h-32 flex items-center justify-center mb-3 mx-auto">
-                                {meal?.image ? (
-                                  <img src={meal.image} alt={getRecipeName(meal)} className="w-28 h-28 object-cover rounded" />
+                                {meal?.imageUrl ? (
+                                  <img src={meal.imageUrl} alt={getRecipeName(meal)} className="w-28 h-28 object-cover rounded" />
                                 ) : (
-                                  <div className="w-28 h-28 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">No Image</div>
+                                  <img src={"https://www.cookwithmanali.com/wp-content/uploads/2019/08/Palak-Paneer.jpg"} alt={getRecipeName(meal)} className="w-28 h-28 object-cover rounded" />
                                 )}
                               </div>
                               <span className="font-normal text-center text-black block">{getRecipeName(meal)}</span>
